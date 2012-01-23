@@ -12,7 +12,7 @@ class SpecRoutes
       end
     end
   end
-  
+    
 end
 
 SpecRoutes.draw!
