@@ -6,6 +6,10 @@ class SpecRoutes
     self.router = ActionDispatch::Routing::RouteSet.new
     self.router.draw do
       resources :posts
+
+      localize do
+        resources :blogs
+      end
     end
   end
   

@@ -4,5 +4,9 @@ require 'rails'
 require 'active_support/all'
 
 module I18nRoutable
-  # Your code goes here...
+  
 end
+
+require 'i18n_routable/localizable_route'
+
+ActionDispatch::Routing::Mapper.send :include, I18nRoutable::LocalizableRoute
