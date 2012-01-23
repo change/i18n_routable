@@ -1,10 +1,10 @@
 require "i18n_routable/version"
 
-require 'rails'
+require 'rails/all'
 require 'active_support/all'
 
 module I18nRoutable
-  
+
 end
 
 require 'i18n_routable/localizable_route'
