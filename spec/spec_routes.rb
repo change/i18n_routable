@@ -11,10 +11,10 @@ class SpecRoutes
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
-        resources :posts
+        resources :blogs
 
-        localize do
-          resources :blogs
+        localize :locale_prefix => /[a-z]{2}/ do
+          resources :posts
         end
       end
     end
