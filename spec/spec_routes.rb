@@ -13,9 +13,15 @@ class SpecRoutes
       self.router.draw do
         resources :blogs
 
-        localize :locale_prefix => /[a-z]{2}/ do
-          resources :posts
-        end
+        localize!
+
+        resources :posts
+
+        resources :events
+
+        delocalize!
+
+        resources :profiles
       end
     end
   end

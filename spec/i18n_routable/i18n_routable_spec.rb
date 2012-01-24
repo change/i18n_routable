@@ -11,6 +11,23 @@ describe I18nRoutable do
     Rails.should be_present
   end
 
+  context "incoming routes" do
+
+    it 'should route properly' do
+      resolve("/posts").should == { :action => "index", :controller => "posts" }
+    end
+
+    it 'should route a localized path properly' do
+      resolve("/es/puestos").should == { :action => "index", :controller => "posts", :locale => "es" }
+    end
+
+    it 'should not route an unlocalized path properly' do
+      lambda { resolve("/es/blogs") }.should raise_error(ActionController::RoutingError)
+      lambda { resolve("/fr/profils") }.should raise_error(ActionController::RoutingError)
+    end
+
+  end
+
   context '#url helpers' do
 
     it 'should generate urls from named_routes' do
@@ -18,11 +35,8 @@ describe I18nRoutable do
       blogs_path.should == '/blogs'
     end
 
-    it "should not generate named routes with not wrapped with localize" do
-      lambda { es_blogs_path }.should raise_error(NameError)
-    end
-
-    it 'should change the route if the locale changes' do
+    it 'should change the route if the global locale changes' do
+      I18n.locale = I18n.default_locale
       posts_path.should == "/posts"
 
       I18n.locale = :es
@@ -30,9 +44,17 @@ describe I18nRoutable do
     end
 
     it "should create named routes with locale prefixes" do
-      posts_path.should == "/posts"
-      es_posts_path.should == "/es/puestos" #named route overrides I18n.locale
+      es_posts_path.should == "/es/puestos"
+      fr_new_event_path.should == "/fr/evenements/nouvelles"
+    end
+
+    it "should not create a named route for the default locale" do
       lambda { en_posts_path }.should raise_error(NameError)
+    end
+
+    it "should not create named routes for unlocalized routes" do
+      lambda { es_blogs_path }.should raise_error(NameError)
+      lambda { fr_profiles_path }.should raise_error(NameError)
     end
 
     it "should accept :locale param as an option" do
@@ -42,26 +64,9 @@ describe I18nRoutable do
       posts_path(:locale => :en).should == "/posts" # option overrides I18n.locale
     end
 
-    # name takes precendence over option
-    #   except in default named_route
-    it "should have a precendence of named_route over param locale" do
-      posts_path(:locale => :es).should == '/es/puestos'
+    it "should have a precendence of named route over locale param" do
       es_posts_path(:locale => :en).should == '/es/puestos'
     end
   end
 
-  context "incoming routes" do
-
-    it 'should route properly' do
-      resolve("/posts").should == { :action => "index", :controller => "posts" }
-    end
-
-    it 'should route a localized path properly' do
-      resolve("/es/puestos").should == { :action => "index", :controller => "posts", :locale => 'es' }
-    end
-
-    it 'should not route a localized path properly for an unlocalized route' do
-      lambda { resolve("/es/blogs") }.should raise_error(ActionController::RoutingError)
-    end
-  end
 end

@@ -1,20 +1,17 @@
 module I18nRoutable::LocalizableMatcher
 
-  def self.included(base)
-    base.alias_method_chain :match, :localize
-  end
-
-
-  def match_with_localize(path, options=nil)
-    # create normal english route
+  def match_with_localize path, options=nil
+    I18nRoutable.defining_base = (I18nRoutable.localized ||= false)
     match_without_localize(path, options).tap do
-      # create localized routes
-      if @localizing
-        trans.keys.each do |locale|
-          generate_locale_route(locale, path, options)
-        end
+      I18nRoutable.defining_base = false
+      if I18nRoutable.localized
+        translate_route ActionDispatch::Routing::Mapper::Mapping.new(@set, @scope, path, options || {}).to_route
       end
     end
+  end
+
+  def self.included base
+    base.alias_method_chain :match, :localize
   end
 
 end
