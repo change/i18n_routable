@@ -5,11 +5,11 @@ require "i18n_routable/version"
 Gem::Specification.new do |s|
   s.name        = "i18n_routable"
   s.version     = I18nRoutable::VERSION
-  s.authors     = ["Alturn Solutions"]
-  s.email       = ["alturnsolutions@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.authors     = ["Chase Stubblefield", "Thomas Shafer"]
+  s.email       = ["tech_ops@change.org"]
+  s.homepage    = "http://www.change.org"
+  s.summary     = %q{Internationalized Routing}
+  s.description = %q{This gem provides an easy way to translate your routes for your international market}
 
   s.rubyforge_project = "i18n_routable"
 
@@ -21,7 +21,6 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", '~> 3.0.0'
   s.add_dependency 'i18n', '~> 0.5'
 
-  # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
   s.add_development_dependency "ruby-debug"
 end
