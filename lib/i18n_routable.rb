@@ -7,6 +7,9 @@ module I18nRoutable
   class << self
     cattr_accessor :localized
     cattr_accessor :defining_base
+    def localized?
+      self.localized
+    end
   end
 end
 

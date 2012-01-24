@@ -1,6 +1,10 @@
 require 'spec_helper'
 describe I18nRoutable do
 
+  before do
+    I18n.locale = :en
+  end
+
   include SpecRoutes.router.url_helpers
 
   def resolve(path)

@@ -17,9 +17,11 @@ class SpecRoutes
 
         resources :posts
 
-        resources :events
-
         delocalize!
+
+        localize do
+          resources :events
+        end
 
         resources :profiles
       end

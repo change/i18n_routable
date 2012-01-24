@@ -4,7 +4,7 @@ module I18nRoutable::LocalizableMatcher
     I18nRoutable.defining_base = (I18nRoutable.localized ||= false)
     match_without_localize(path, options).tap do
       I18nRoutable.defining_base = false
-      if I18nRoutable.localized
+      if I18nRoutable.localized?
         translate_route ActionDispatch::Routing::Mapper::Mapping.new(@set, @scope, path, options || {}).to_route
       end
     end
