@@ -5,9 +5,9 @@ module I18nRoutable::LocalizableUrlHelper
       kind ||= :url
       url_name = "#{name}_#{kind}"
       if I18nRoutable.defining_base
-        @module.module_eval method_definition_of_base_localized_route(url_name), __FILE__, __LINE__
+        @module.module_eval method_definition_of_base_localized_route(url_name), __FILE__
       elsif I18nRoutable.localized?
-        @module.module_eval method_definition_of_localized_route(url_name), __FILE__, __LINE__
+        @module.module_eval method_definition_of_localized_route(url_name), __FILE__
       end
     end
   end

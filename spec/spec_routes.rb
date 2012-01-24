@@ -36,6 +36,10 @@ class SpecRoutes
           resources :users
         end
 
+        localize(:locales => [:gibberish]) do
+          resources :polls
+        end
+
         resources :profiles
       end
     end

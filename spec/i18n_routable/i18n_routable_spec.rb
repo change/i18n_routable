@@ -45,6 +45,10 @@ describe I18nRoutable do
       resolve("/fr/messages/hello-there/commentaires/the-comment-id/modifier").should == expected
     end
 
+    it "should not translate a route for an unexisting translation" do
+      resolve("/gibberish/polls").should == { :action => "index", :controller => "polls", :locale => "gibberish" }
+    end
+
   end
 
   context '#url helpers' do
@@ -100,6 +104,30 @@ describe I18nRoutable do
       es_posts_url.should == "http://www.example.com/es/puestos"
       I18n.locale = :es
       post_url(2).should == "http://www.example.com/es/puestos/2"
+    end
+
+  end
+
+  context 'validating config options' do
+
+    it 'should not support a symbol for :locales' do
+      lambda do
+        SpecRoutes.router.draw do
+          localize :locales => :fr do
+            resources :dogs
+          end
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should not support invalid options' do
+      lambda do
+        SpecRoutes.router.draw do
+          localize :foo => :boo do
+            resources :dogs
+          end
+        end
+      end.should raise_error(ArgumentError)
     end
 
   end
