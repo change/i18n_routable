@@ -39,7 +39,7 @@ module I18nRoutable::LocalizableScope
   def default_localize_options
     {
     :locale_prefix => true,
-    :locales => I18n.available_locales - I18n.default_locale
+    :locales => I18n.available_locales - [I18n.default_locale]
     }
   end
 

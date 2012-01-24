@@ -7,8 +7,8 @@ describe I18nRoutable do
 
   include SpecRoutes.router.url_helpers
 
-  def resolve(path)
-    SpecRoutes.router.recognize_path(path)
+  def resolve(path, http_verb=:get)
+    SpecRoutes.router.recognize_path(path, {:method => http_verb})
   end
 
   it "should load rails" do
@@ -34,6 +34,15 @@ describe I18nRoutable do
       lambda { resolve("/es/usuarios") }.should raise_error(ActionController::RoutingError)
       resolve("/usuarios").should  == { :action => "index", :controller => "users", :locale => "es" }
       resolve("/utilisateurs").should  == { :action => "index", :controller => "users", :locale => "fr" }
+    end
+
+    it 'should resolve custom actions' do
+      resolve("/es/eventos/1/unirse", :post).should == { :action => "join", :id => "1", :controller => "events", :locale => "es" }
+    end
+
+    it 'should resolve nested resources' do
+      expected = { :action => "edit", :post_id => "hello-there", :id => 'the-comment-id', :controller => "comments", :locale => "fr" }
+      resolve("/fr/messages/hello-there/commentaires/the-comment-id/modifier").should == expected
     end
 
   end
@@ -83,6 +92,9 @@ describe I18nRoutable do
       es_posts_path(:locale => :en).should == '/es/puestos'
     end
 
+    it "should understand nested resources" do
+      fr_new_post_comment_path(:post_id => 12, :random => 'param').should == '/fr/messages/12/commentaires/nouvelles?random=param'
+    end
 
   end
 

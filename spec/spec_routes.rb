@@ -1,3 +1,5 @@
+I18n.load_path = (I18n.load_path << Dir[File.join(File.dirname(__FILE__), 'locales', 'routes.yml')]).uniq
+
 class SpecRoutes
 
   cattr_accessor :router
@@ -15,12 +17,18 @@ class SpecRoutes
 
         localize!
 
-        resources :posts
+        resources :posts do
+          resources :comments
+        end
 
         delocalize!
 
         localize do
-          resources :events
+          resources :events do
+            member do
+              post :join
+            end
+          end
         end
 
         localize(:locale_prefix => false) do

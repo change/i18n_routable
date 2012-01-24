@@ -5,6 +5,8 @@ es:
     events: eventos
     users: usuarios
     posts: puestos
+    join: unirse
+
 fr:
   routes:
     new: nouvelles
@@ -12,3 +14,4 @@ fr:
     events: evenements
     users: utilisateurs
     posts: messages
+    comments: commentaires
