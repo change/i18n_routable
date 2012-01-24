@@ -8,6 +8,7 @@ class SpecRoutes
 
     def go!
       draw!
+      set_default_host!
     end
 
     def draw!
@@ -37,6 +38,10 @@ class SpecRoutes
 
         resources :profiles
       end
+    end
+
+    def set_default_host!
+      self.router.default_url_options[:host] = 'www.example.com'
     end
   end
 

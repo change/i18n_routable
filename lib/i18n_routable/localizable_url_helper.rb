@@ -2,6 +2,7 @@ module I18nRoutable::LocalizableUrlHelper
 
   def define_url_helper_with_localize(route, name, kind, options)
     define_url_helper_without_localize(route, name, kind, options).tap do
+      kind ||= :url
       url_name = "#{name}_#{kind}"
       if I18nRoutable.defining_base
         @module.module_eval method_definition_of_base_localized_route(url_name), __FILE__, __LINE__
@@ -15,13 +16,13 @@ module I18nRoutable::LocalizableUrlHelper
     <<-RUBY
       def #{url_name}_with_localize(*args)
         options = args.extract_options!
-        args << options
         if options.has_key?(:locale)
           locale = options.delete(:locale)
           locale = nil if locale == I18n.default_locale
         elsif I18n.locale && I18n.locale != I18n.default_locale
           locale = I18n.locale
         end
+        args << options
         if locale
           send(:"\#\{locale\}_#{url_name}", *args)
         else

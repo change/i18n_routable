@@ -96,6 +96,12 @@ describe I18nRoutable do
       fr_new_post_comment_path(:post_id => 12, :random => 'param').should == '/fr/messages/12/commentaires/nouvelles?random=param'
     end
 
+    it "should create named url helpers" do
+      es_posts_url.should == "http://www.example.com/es/puestos"
+      I18n.locale = :es
+      post_url(2).should == "http://www.example.com/es/puestos/2"
+    end
+
   end
 
 end
