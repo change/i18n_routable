@@ -5,10 +5,10 @@ require 'active_support/all'
 
 module I18nRoutable
   class << self
-    cattr_accessor :localized
+    cattr_accessor :localize_config
     cattr_accessor :defining_base
     def localized?
-      self.localized
+      !!self.localize_config
     end
   end
 end

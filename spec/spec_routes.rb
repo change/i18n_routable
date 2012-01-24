@@ -23,6 +23,10 @@ class SpecRoutes
           resources :events
         end
 
+        localize(:locale_prefix => false) do
+          resources :users
+        end
+
         resources :profiles
       end
     end

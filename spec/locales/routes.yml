@@ -1,0 +1,14 @@
+es:
+  routes:
+    new: neuvo
+    edit: editar
+    events: eventos
+    users: usuarios
+    posts: puestos
+fr:
+  routes:
+    new: nouvelles
+    edit: modifier
+    events: evenements
+    users: utilisateurs
+    posts: messages

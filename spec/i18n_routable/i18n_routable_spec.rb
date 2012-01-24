@@ -30,6 +30,12 @@ describe I18nRoutable do
       lambda { resolve("/fr/profils") }.should raise_error(ActionController::RoutingError)
     end
 
+    it 'should not prefix the locale on unprefixed routes' do
+      lambda { resolve("/es/usuarios") }.should raise_error(ActionController::RoutingError)
+      resolve("/usuarios").should  == { :action => "index", :controller => "users", :locale => "es" }
+      resolve("/utilisateurs").should  == { :action => "index", :controller => "users", :locale => "fr" }
+    end
+
   end
 
   context '#url helpers' do
@@ -52,6 +58,11 @@ describe I18nRoutable do
       fr_new_event_path.should == "/fr/evenements/nouvelles"
     end
 
+    it "should create named routes without locale prefixes when specified" do
+      es_users_path.should == "/usuarios"
+      new_user_path(:locale => :fr).should == "/utilisateurs/nouvelles"
+    end
+
     it "should not create a named route for the default locale" do
       lambda { en_posts_path }.should raise_error(NameError)
     end
@@ -71,6 +82,8 @@ describe I18nRoutable do
     it "should have a precendence of named route over locale param" do
       es_posts_path(:locale => :en).should == '/es/puestos'
     end
+
+
   end
 
 end

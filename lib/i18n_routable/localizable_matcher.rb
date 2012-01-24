@@ -1,7 +1,7 @@
 module I18nRoutable::LocalizableMatcher
 
   def match_with_localize path, options=nil
-    I18nRoutable.defining_base = (I18nRoutable.localized ||= false)
+    I18nRoutable.defining_base = I18nRoutable.localized?
     match_without_localize(path, options).tap do
       I18nRoutable.defining_base = false
       if I18nRoutable.localized?
