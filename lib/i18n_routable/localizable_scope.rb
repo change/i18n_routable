@@ -50,4 +50,19 @@ module I18nRoutable::LocalizableScope
     raise ArgumentError, "Unsupported options: #{extra_keys.inspect}" if extra_keys.present?
   end
 
+  def deep_clone object
+    case object
+    when Hash
+      object.inject({}) do |hsh,(k,v)|
+        hsh.update(k => deep_clone(v))
+      end
+    when Array
+      object.map { |e| deep_clone(e) }
+    when Symbol, TrueClass, FalseClass, NilClass
+      object
+    else
+      object.respond_to?(:dup) ? object.dup : object
+    end
+  end
+
 end
