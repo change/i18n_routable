@@ -22,6 +22,8 @@ class SpecRoutes
           resources :comments
         end
 
+        get 'all-the-posts' => 'posts#index', :as => :all_posts, :defaults => {:display => 'all'}
+
         delocalize!
 
         localize do

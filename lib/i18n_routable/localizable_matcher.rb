@@ -1,11 +1,12 @@
 module I18nRoutable::LocalizableMatcher
 
   def match_with_localize path, options=nil
+    options_clone = Marshal.load(Marshal.dump(options))
     I18nRoutable.defining_base = I18nRoutable.localized?
     match_without_localize(path, options).tap do
       I18nRoutable.defining_base = false
       if I18nRoutable.localized?
-        translate_route ActionDispatch::Routing::Mapper::Mapping.new(@set, @scope, path, options || {}).to_route
+        translate_route ActionDispatch::Routing::Mapper::Mapping.new(@set, @scope, path, options_clone || {}).to_route
       end
     end
   end

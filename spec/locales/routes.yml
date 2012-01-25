@@ -6,6 +6,7 @@ es:
     users: usuarios
     posts: puestos
     join: unirse
+    all-the-posts: "todos-los-puestos"
 
 fr:
   routes:

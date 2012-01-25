@@ -16,10 +16,18 @@ module I18nRoutable::LocalizableRoute
   end
 
   def translated_path en_path, locale
-    new_path = en_path.dup
+    new_path = ''
     new_path.insert 0, "/#{locale}" if I18nRoutable.localize_config[:locale_prefix]
-    translation = I18n.translate 'routes', :locale => locale, :default => {}
-    translation.each_pair { |k, v| new_path.gsub!(k.to_s, v) }
+    new_path << en_path.split(/(\(.+\))/).map do |component|
+      unless component.starts_with?("(")
+        component.split("/").map do |word|
+          word.blank? || word.starts_with?(":") ? word :
+            I18n.translate(word, :locale => locale, :scope => 'routes', :default => word)
+        end.join("/")
+      else
+        component
+      end
+    end.join
     new_path
   end
 
