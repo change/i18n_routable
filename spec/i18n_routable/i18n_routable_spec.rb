@@ -92,6 +92,11 @@ describe I18nRoutable do
       posts_path(:locale => :en).should == "/posts" # option overrides I18n.locale
     end
 
+    it "should accept :locale param as a symbol or string" do
+      posts_path(:locale => :en).should == "/posts" # option overrides I18n.locale
+      posts_path(:locale => 'en').should == "/posts" # option overrides I18n.locale
+    end
+
     it "should have a precendence of named route over locale param" do
       es_posts_path(:locale => :en).should == '/es/puestos'
     end

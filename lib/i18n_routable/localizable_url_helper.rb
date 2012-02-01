@@ -18,7 +18,7 @@ module I18nRoutable::LocalizableUrlHelper
         options = args.extract_options!
         if options.has_key?(:locale)
           locale = options.delete(:locale)
-          locale = nil if locale == I18n.default_locale
+          locale = nil if locale.to_s == I18n.default_locale.to_s
         elsif I18n.locale && I18n.locale != I18n.default_locale
           locale = I18n.locale
         end
