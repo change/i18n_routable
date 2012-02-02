@@ -11,6 +11,10 @@ describe I18nRoutable do
     SpecRoutes.router.recognize_path(path, {:method => http_verb})
   end
 
+  def base_named_route_for(options)
+    SpecRoutes.router.base_named_route_for(options)
+  end
+
   it "should load rails" do
     Rails.should be_present
   end
@@ -113,6 +117,27 @@ describe I18nRoutable do
       es_posts_url.should == "http://www.example.com/es/puestos"
       I18n.locale = :es
       post_url(2).should == "http://www.example.com/es/puestos/2"
+    end
+
+  end
+
+  context '#base_named_route_for' do
+
+    it 'should pick the best route' do
+      base_named_route_for('/posts').should == :posts
+      base_named_route_for("/posts?random=variable").should == :posts
+      base_named_route_for("/all-the-posts").should == :all_posts
+      base_named_route_for("posts/1").should == :post
+    end
+
+    it 'should remove the locale from the name' do
+      base_named_route_for('/es/puestos').should == :posts
+      base_named_route_for('/es/puestos/2').should == :post
+
+    end
+
+    it "should not fail under a route that doesn't exist" do
+      base_named_route_for("/route-that-doesn't-exist").should be_nil
     end
 
   end
