@@ -49,6 +49,10 @@ describe I18nRoutable do
       resolve("/gibberish/polls").should == { :action => "index", :controller => "polls", :locale => "gibberish" }
     end
 
+    it 'should recognize un-resourcful urls' do
+      resolve('/es/todos-los-puestos').should == {:display=>"all", :locale=>"es", :action=>"index", :controller=>"posts"}
+    end
+
   end
 
   context '#url helpers' do
