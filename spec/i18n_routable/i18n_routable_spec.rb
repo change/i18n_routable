@@ -118,6 +118,10 @@ describe I18nRoutable do
       I18n.locale = :es
       post_url(2).should == "http://www.example.com/es/puestos/2"
     end
+    
+    it 'should not blow up if given a bad locale' do
+      posts_url(:locale => "INVALID").should == "http://www.example.com/posts"
+    end
 
   end
 
