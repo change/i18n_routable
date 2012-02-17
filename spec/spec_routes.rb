@@ -14,6 +14,9 @@ class SpecRoutes
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
+
+        get :constraints => lambda { false }, "*path" => "FooController#foo"
+
         resources :blogs
 
         localize!
