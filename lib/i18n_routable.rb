@@ -10,6 +10,9 @@ module I18nRoutable
     def localized?
       !!self.localize_config
     end
+    def locales
+      I18nRoutable.localize_config[:locales].map(&:to_s)
+    end
   end
 end
 

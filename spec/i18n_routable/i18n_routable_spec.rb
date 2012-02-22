@@ -118,9 +118,23 @@ describe I18nRoutable do
       I18n.locale = :es
       post_url(2).should == "http://www.example.com/es/puestos/2"
     end
-    
+
     it 'should render the english locale if given a bad locale' do
       posts_url(:locale => "INVALID").should == "http://www.example.com/posts"
+    end
+
+  end
+
+  context 'hash_for helpers' do
+
+    it 'should return a localized route when using hash_for helpers' do
+      hash_for_posts_url(:locale => 'es').should == {:action=>"index", :controller=>"posts", :use_route=>"es_posts", :only_path=>false}
+    end
+
+    it 'should respect I18n.locale' do
+      hash_for_post_url(:id => 1).should == {:action=>"show", :controller=>"posts", :use_route=>"post", :id => 1, :only_path=>false}
+      I18n.locale = 'es'
+      hash_for_post_url(:id => 1).should == {:action=>"show", :controller=>"posts", :use_route=>"es_post", :id => 1, :only_path=>false}
     end
 
   end
