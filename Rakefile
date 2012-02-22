@@ -1,7 +1,6 @@
 require "bundler/gem_tasks"
 
 require 'i18n_routable'
-require 'ruby-debug'
 
 # Stolen from rake routes
 # https://github.com/rails/rails/blob/4f15f392601d4504fab850f3bf659c43f0cb51ec/railties/lib/rails/tasks/routes.rake

@@ -22,5 +22,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'i18n', '~> 0.5'
 
   s.add_development_dependency "rspec"
-  s.add_development_dependency "ruby-debug"
 end

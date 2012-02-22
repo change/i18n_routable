@@ -11,11 +11,12 @@ class SpecRoutes
       set_default_host!
     end
 
+
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
 
-        get :constraints => lambda { false }, "*path" => "FooController#foo"
+        get :constraints => proc { false }, "*path" => "FooController#foo"
 
         resources :blogs
 
