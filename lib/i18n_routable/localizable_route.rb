@@ -22,7 +22,7 @@ module I18nRoutable::LocalizableRoute
       unless component.starts_with?("(")
         component.split("/").map do |word|
           word.blank? || word.starts_with?(":") ? word :
-            I18n.translate(word, :locale => locale, :scope => 'routes', :default => word)
+            CGI.escape(I18n.translate(word, :locale => locale, :scope => 'routes', :default => word))
         end.join("/")
       else
         component

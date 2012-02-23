@@ -26,6 +26,8 @@ class SpecRoutes
           resources :comments
         end
 
+        get 'cafe' => 'cafe#drink'
+
         get 'all-the-posts' => 'posts#index', :as => :all_posts, :defaults => {:display => 'all'}
 
         match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }

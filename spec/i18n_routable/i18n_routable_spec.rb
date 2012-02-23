@@ -59,6 +59,16 @@ describe I18nRoutable do
 
   end
 
+  context "utf-8 routes" do
+    it "should escape outgoing routes" do
+      I18n.locale = :es
+      cafe_path.should == '/es/caf%C3%A9'
+    end
+    it 'should resolve incoming escaped routes' do
+      resolve('/es/caf%C3%A9').should == {:locale=>"es", :action=>"drink", :controller=>"cafe"}
+    end
+  end
+
   context '#url helpers' do
 
     it 'should generate urls from named_routes' do

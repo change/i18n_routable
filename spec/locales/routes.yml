@@ -5,6 +5,7 @@ es:
     events: eventos
     users: usuarios
     posts: puestos
+    cafe: café
     join: unirse
     all-the-posts: "todos-los-puestos"
     bypass_action_controller: derivacion_controlador_de_accion
