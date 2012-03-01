@@ -17,7 +17,7 @@ module I18nRoutable
 
     module PathParametersOverride
       def symbolized_path_parameters_without_locale
-        @symbolized_path_parameters_without_locale ||= symbolized_path_parameters.except(:locale)
+        symbolized_path_parameters.except(:locale)
       end
     end
 
