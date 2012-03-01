@@ -9,6 +9,7 @@ class SpecRoutes
     def go!
       draw!
       set_default_host!
+      include_helper!
     end
 
 
@@ -25,6 +26,8 @@ class SpecRoutes
         resources :posts do
           resources :comments
         end
+
+        get 'test' => "tests#foo"
 
         get 'cafe' => 'cafe#drink'
 
@@ -57,6 +60,10 @@ class SpecRoutes
 
     def set_default_host!
       self.router.default_url_options[:host] = 'www.example.com'
+    end
+
+    def include_helper!
+      ActionController::Base.descendants.each {|d| d.send :include, SpecRoutes.router.url_helpers}
     end
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
-describe I18nRoutable::LocalizableRoute do
+describe I18nRoutable::Mapper::LocalizableRoute do
 
-  subject { Class.new { include I18nRoutable::LocalizableRoute }.new}
+  subject { Class.new { include I18nRoutable::Mapper::LocalizableRoute }.new}
 
   context '#translated_path' do
 

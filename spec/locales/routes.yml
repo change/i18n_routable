@@ -9,6 +9,7 @@ es:
     join: unirse
     all-the-posts: "todos-los-puestos"
     bypass_action_controller: derivacion_controlador_de_accion
+    test: prueba
 
 fr:
   routes:
@@ -18,3 +19,4 @@ fr:
     users: utilisateurs
     posts: messages
     comments: commentaires
+    test: test

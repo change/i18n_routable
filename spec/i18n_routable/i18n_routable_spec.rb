@@ -15,6 +15,10 @@ describe I18nRoutable do
     SpecRoutes.router.base_named_route_for(options)
   end
 
+  it 'should load the version' do
+    I18nRoutable::VERSION.should be_present
+  end
+
   it "should load rails" do
     Rails.should be_present
   end
@@ -129,7 +133,7 @@ describe I18nRoutable do
       post_url(2).should == "http://www.example.com/es/puestos/2"
     end
 
-    it 'should render the english locale if given a bad locale' do
+    it 'should render the default locale if given a bad locale' do
       posts_url(:locale => "INVALID").should == "http://www.example.com/posts"
     end
 
@@ -171,6 +175,10 @@ describe I18nRoutable do
   end
 
   context 'validating config options' do
+
+    after do
+      SpecRoutes.go!
+    end
 
     it 'should not support a symbol for :locales' do
       lambda do
