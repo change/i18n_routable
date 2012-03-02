@@ -27,7 +27,6 @@ class SpecRoutes
           resources :comments
         end
 
-        get 'test' => "tests#foo"
 
         get 'cafe' => 'cafe#drink'
 
@@ -35,6 +34,9 @@ class SpecRoutes
 
         match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }
 
+        # TestController
+        get 'test' => "test#foo", :as => :test
+        get 'url_for' => 'test#use_url_for_with_implicit_params'
 
         delocalize!
 
@@ -55,6 +57,7 @@ class SpecRoutes
         end
 
         resources :profiles
+
       end
     end
 
@@ -63,7 +66,7 @@ class SpecRoutes
     end
 
     def include_helper!
-      ActionController::Base.descendants.each {|d| d.send :include, SpecRoutes.router.url_helpers}
+      ActionController::Base.descendants.each {|d| d.send :include, self.router.url_helpers}
     end
   end
 
