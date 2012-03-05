@@ -7,6 +7,7 @@ require 'i18n_routable'
 require 'rspec'
 require 'rspec/rails'
 
+require 'i18n_routable/test_case'
 
 I18n.default_locale = :en
 require 'mocks'

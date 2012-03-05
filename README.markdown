@@ -93,6 +93,10 @@ For the most part, it should be invisible. Injected into your params hash you'll
 
 Now you're locale is setup. Let's say your locale is set to 'es', calling `posts_url` will behind the scenes call `es_posts_url`. You can override the locale by passing :locale to your url calls, such as `posts_url(:locale => 'en')`. To see a full list of options and rules, checkout the tests. But the idea is to never need to pass locale or worry about your routes.
 
+## TESTING ##
+
+Add `require 'i18n_routable/test_case'` to your test environment loader.
+
 ## FAQ ##
 
 Q: What if I don't like the block syntax?

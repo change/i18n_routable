@@ -39,7 +39,3 @@ end
 
 ActionController::UrlFor.send :include, I18nRoutable::UrlOptionsOverride::ActionControllerOverride
 ActionDispatch::Http::Parameters.send :include, I18nRoutable::UrlOptionsOverride::PathParametersOverride
-if Rails.env.test?
-  ActionController::TestCase # make sure it is loaded
-  ActionController::TestRequest.send :include, I18nRoutable::UrlOptionsOverride::TestRequestOverride
-end
