@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-class TestController
+class TestController < ActionController::Base
 
   def foo
     render :text => posts_path(:locale => :es)

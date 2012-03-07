@@ -21,21 +21,8 @@ module I18nRoutable
       end
     end
 
-
-    module TestRequestOverride
-
-      def self.included base
-        base.alias_method_chain :assign_parameters, :locale_removed
-      end
-
-      def assign_parameters_with_locale_removed(routes, controller_path, action, parameters = {})
-        assign_parameters_without_locale_removed(routes, controller_path, action, parameters)
-        @symbolized_path_parameters_without_locale = nil
-      end
-    end
-
   end
 end
 
-ActionController::UrlFor.send :include, I18nRoutable::UrlOptionsOverride::ActionControllerOverride
-ActionDispatch::Http::Parameters.send :include, I18nRoutable::UrlOptionsOverride::PathParametersOverride
+ActionController::Base.send :include, I18nRoutable::UrlOptionsOverride::ActionControllerOverride
+ActionDispatch::Request.send :include, I18nRoutable::UrlOptionsOverride::PathParametersOverride
