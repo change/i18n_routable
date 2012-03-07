@@ -20,3 +20,13 @@ fr:
     posts: messages
     comments: commentaires
     test: test
+
+fr-CA:
+  routes:
+    new: nouvelles
+    edit: modifier
+    events: evenements
+    users: utilisateurs
+    posts: messages
+    comments: commentaires
+    test: test

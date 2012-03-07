@@ -40,7 +40,11 @@ module I18nRoutable
       end
 
       def translated_name en_name, locale
-        "#{locale}_#{en_name}"
+        "#{normalize_locale locale}_#{en_name}"
+      end
+
+      def normalize_locale locale
+        locale.to_s.downcase.gsub /-/, '_'
       end
 
     end
