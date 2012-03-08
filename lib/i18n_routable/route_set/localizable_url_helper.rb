@@ -32,6 +32,7 @@ module I18nRoutable
             locale, args = I18nRoutable::RouteSet::LocalizableUrlHelper.extract_locale!([options])
             #{selector}_without_localize(*args).tap do |hsh|
               if locale && #{locales.inspect}.include?(locale)
+                locale = I18nRoutable::Mapper::LocalizableRoute.normalize_locale(locale)
                 hsh[:use_route] = "\#\{locale\}_#{name}"
               end
             end

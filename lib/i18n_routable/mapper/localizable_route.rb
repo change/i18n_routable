@@ -2,6 +2,10 @@ module I18nRoutable
   module Mapper
     module LocalizableRoute
 
+      def self.normalize_locale locale
+        locale.to_s.downcase.gsub /-/, '_'
+      end
+
       private
 
       def translate_route en_route
@@ -40,11 +44,7 @@ module I18nRoutable
       end
 
       def translated_name en_name, locale
-        "#{normalize_locale locale}_#{en_name}"
-      end
-
-      def normalize_locale locale
-        locale.to_s.downcase.gsub /-/, '_'
+        "#{I18nRoutable::Mapper::LocalizableRoute.normalize_locale locale}_#{en_name}"
       end
 
     end

@@ -31,6 +31,7 @@ describe I18nRoutable do
 
     it 'should route a localized path properly' do
       resolve("/es/puestos").should == { :action => "index", :controller => "posts", :locale => "es" }
+      resolve("/fr-CA/canada_test").should == { :action => "foo", :controller => "test", :locale => "fr-CA" }
     end
 
     it 'should not route an unlocalized path properly' do
@@ -91,6 +92,7 @@ describe I18nRoutable do
     it "should create named routes with locale prefixes" do
       es_posts_path.should == "/es/puestos"
       fr_new_event_path.should == "/fr/evenements/nouvelles"
+      fr_ca_new_event_path.should == "/fr-CA/evenements/nouvelles"
     end
 
     it "should create named routes without locale prefixes when specified" do
@@ -109,6 +111,7 @@ describe I18nRoutable do
 
     it "should accept :locale param as an option" do
       posts_path(:locale => :es).should == "/es/puestos"
+      posts_path(:locale => :'fr-CA').should == "/fr-CA/messages"
       posts_path(:locale => I18n.default_locale).should == posts_path
       I18n.locale = :es
       posts_path(:locale => :en).should == "/posts" # option overrides I18n.locale
