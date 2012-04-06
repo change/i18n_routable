@@ -1,5 +1,8 @@
 # I18n Routable #
 
+[![Build Status](https://secure.travis-ci.org/change/i18n_routable.png?branch=master)](http://travis-ci.org/change/i18n_routable)
+
+
 This is used to make your routes internationalized! It's a whole lot of code for only 1 public method!
 
 ## Interface and Options ##
