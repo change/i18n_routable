@@ -183,7 +183,7 @@ describe I18nRoutable do
       SpecRoutes.go!
     end
 
-    it 'should not support a symbol for :locales' do
+    it 'should not support a symbol for :locales, it must take an array' do
       lambda do
         SpecRoutes.router.draw do
           localize :locales => :fr do
