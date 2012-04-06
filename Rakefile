@@ -38,3 +38,9 @@ task :routes do
     puts "#{r[:name].rjust(name_width)} #{r[:verb].ljust(verb_width)} #{r[:path].ljust(path_width)} #{r[:reqs]}"
   end
 end
+
+task :default => :test
+
+task :test do
+  exec 'rspec'
+end
