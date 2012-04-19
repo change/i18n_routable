@@ -12,6 +12,10 @@ class SpecRoutes
       include_helper!
     end
 
+    def always_new_router
+      ActionDispatch::Routing::RouteSet.new
+    end
+
 
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new

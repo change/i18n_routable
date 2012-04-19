@@ -23,6 +23,30 @@ describe I18nRoutable do
     Rails.should be_present
   end
 
+  context 'validating config options' do
+
+    it 'should not support a symbol for :locales, it must take an array' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize :locales => :fr do
+            resources :dogs
+          end
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should not support invalid options' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize :foo => :boo do
+            resources :dogs
+          end
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+  end
+
   context "incoming routes" do
 
     it 'should route properly' do
@@ -173,38 +197,6 @@ describe I18nRoutable do
 
     it "should not fail under a route that doesn't exist" do
       base_named_route_for("/route-that-doesn't-exist").should be_nil
-    end
-
-  end
-
-  context 'validating config options' do
-
-    before do
-        SpecRoutes.router.clear!
-    end
-
-    after do
-      SpecRoutes.go!
-    end
-
-    it 'should not support a symbol for :locales, it must take an array' do
-      lambda do
-        SpecRoutes.router.draw do
-          localize :locales => :fr do
-            resources :dogs
-          end
-        end
-      end.should raise_error(ArgumentError)
-    end
-
-    it 'should not support invalid options' do
-      lambda do
-        SpecRoutes.router.draw do
-          localize :foo => :boo do
-            resources :dogs
-          end
-        end
-      end.should raise_error(ArgumentError)
     end
 
   end
