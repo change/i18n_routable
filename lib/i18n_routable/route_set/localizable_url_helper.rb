@@ -19,7 +19,7 @@ module I18nRoutable
         define_hash_access_without_localize(route, name, kind, options).tap do
           selector = hash_access_name(name, kind)
           if I18nRoutable.defining_base
-            @module.module_eval method_definition_of_base_localized_route_hash_helper(selector, I18nRoutable.locales, name), __FILE__
+            @module.module_eval method_definition_of_base_localized_route_hash_helper(selector, I18nRoutable.backend_locales, name), __FILE__
           elsif I18nRoutable.localized?
             @module.module_eval method_definition_of_localized_route_hash_helper(selector), __FILE__
           end

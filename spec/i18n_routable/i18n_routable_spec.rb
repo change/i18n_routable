@@ -79,7 +79,8 @@ describe I18nRoutable do
     end
 
     it "should not translate a route for an unexisting translation" do
-      resolve("/gibberish/polls").should == { :action => "index", :controller => "polls", :locale => "gibberish" }
+      resolve("/gibberish/polls/").should == { :action => "index", :controller => "polls", :locale => "gibberish" }
+      resolve("/gibberish/polls/the-new").should == { :action => "new", :controller => "polls", :locale => "gibberish" }
     end
 
     it 'should recognize un-resourcful urls' do
@@ -162,6 +163,12 @@ describe I18nRoutable do
 
     it 'should render the default locale if given a bad locale' do
       posts_url(:locale => "INVALID").should == "http://www.example.com/posts"
+    end
+
+    it 'should understand the difference between display locales and backend locales' do
+      I18n.locale = :gibb
+      new_poll_url.should == "http://www.example.com/gibberish/polls/the-new"
+      gibb_new_poll_url.should == "http://www.example.com/gibberish/polls/the-new"
     end
 
   end

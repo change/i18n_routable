@@ -122,6 +122,14 @@ A: We want to harnass the power of the rails router. So instead of rewriting a l
 Q: Can the default locale be prefixed with the locale?
 A: The default locale cannot be prefixed.
 
+Q: What if I want to show the users a different locale than what I store it in the backend?
+A: That's easy, just pass a hash as an array item in your localize call such as
+
+```ruby
+localize [{:display_name => :locale}, {:second_display => :second_locale}, :locale3, :locale4] do
+  ...
+end
+```
 
 ## Thanks ##
 

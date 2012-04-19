@@ -56,7 +56,7 @@ class SpecRoutes
           resources :users
         end
 
-        localize(:locales => [:gibberish]) do
+        localize(:locales => [{:gibberish => :gibb}, :aussie]) do
           resources :polls
         end
 

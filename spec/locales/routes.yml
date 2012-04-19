@@ -30,3 +30,7 @@ fr-CA:
     posts: messages
     comments: commentaires
     test: canada_test
+
+gibb:
+  routes:
+    new: the-new
