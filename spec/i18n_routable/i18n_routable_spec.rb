@@ -179,6 +179,10 @@ describe I18nRoutable do
 
   context 'validating config options' do
 
+    before do
+        SpecRoutes.router.clear!
+    end
+
     after do
       SpecRoutes.go!
     end

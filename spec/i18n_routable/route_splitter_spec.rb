@@ -6,7 +6,12 @@ describe I18nRoutable::Mapper::LocalizableRoute do
   context '#translated_path' do
 
     before do
+      @old_config = I18nRoutable.localize_config
       I18nRoutable.localize_config = {}
+    end
+
+    after do
+      I18nRoutable.localize_config = @old_config
     end
 
     def t path, locale
