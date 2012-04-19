@@ -1,5 +1,6 @@
 *.gem
+.bin
 .bundle
+.irb-save-history
 Gemfile.lock
 pkg/*
-.bin
