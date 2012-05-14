@@ -17,6 +17,10 @@ end
 
 describe TestController do
 
+  before do
+    @routes = SpecRoutes.router
+  end
+
   it 'should generate the localized urls properly when in a non-default locale' do
 
     # issue a request to the route for French locale
