@@ -24,7 +24,7 @@ describe TestController do
 
     # make sure response is good
     response_code, _, response = SpecRoutes.router.call(env)
-    response.body.should == '/es/puestos'
+    response.body.should eql '/es/puestos'
     response_code.to_i.should == 200
   end
 
@@ -34,7 +34,7 @@ describe TestController do
 
       # run in context of controller with no request, so
       # path parameters are empty
-      test_path.should == '/test'
+      controller.send(:test_path).should eql '/test'
 
       # path parameters should be set properly when doing this
       get :use_url_for_with_implicit_params
