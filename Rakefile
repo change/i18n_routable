@@ -6,7 +6,7 @@ require 'i18n_routable'
 # https://github.com/rails/rails/blob/4f15f392601d4504fab850f3bf659c43f0cb51ec/railties/lib/rails/tasks/routes.rake
 task :routes do
 
-  require 'spec/spec_routes'
+  require Pathname.new(File.dirname(__FILE__))+ 'spec/spec_routes'
 
   all_routes = SpecRoutes.router.routes
 
