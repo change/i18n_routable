@@ -1,7 +1,7 @@
 class TestController < ActionController::Base; end
+class TestApplication < Rails::Application; end
 
 RSpec.configure do |config|
-
 
   config.before do
     I18n.locale = I18n.default_locale
