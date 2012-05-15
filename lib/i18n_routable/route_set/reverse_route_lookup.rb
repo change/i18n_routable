@@ -20,7 +20,7 @@ module I18nRoutable
         @set.recognize(req) do |route, matches, params|
           if route.name
             if params[:locale].present?
-              return route.name.to_s.gsub(/^#{params[:locale]}_/, '').to_sym
+              return route.name.to_s.sub(/[^_]+_/, '').to_sym
             else
               return route.name
             end

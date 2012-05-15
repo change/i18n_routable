@@ -3,7 +3,7 @@ module I18nRoutable
     module LocalizableRoute
 
       def self.normalize_locale locale
-        locale.to_s.downcase.gsub /-/, '_'
+        locale.to_s.downcase.gsub /-/, ''
       end
 
       private

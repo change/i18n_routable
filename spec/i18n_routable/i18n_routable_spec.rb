@@ -117,7 +117,7 @@ describe I18nRoutable do
     it "should create named routes with locale prefixes" do
       es_posts_path.should eql "/es/puestos"
       fr_new_event_path.should eql "/fr/evenements/nouvelles"
-      fr_ca_new_event_path.should eql "/fr-CA/evenements/nouvelles"
+      frca_new_event_path.should eql "/fr-CA/evenements/nouvelles"
     end
 
     it "should create named routes without locale prefixes when specified" do
@@ -203,6 +203,10 @@ describe I18nRoutable do
 
     it "should not fail under a route that doesn't exist" do
       base_named_route_for("/route-that-doesn't-exist").should be_nil
+    end
+
+    it 'should work when the display locale is different from the backend locale' do
+      base_named_route_for('/gibberish/polls/the-new').should eql :new_poll
     end
 
   end
