@@ -20,17 +20,15 @@ class SpecRoutes
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
+        localize! :locales => [{:gibberish => :gibb}, :aussie, :es, :fr, :'fr-CA']
 
         get :constraints => proc { false }, "*path" => "FooController#foo"
 
         resources :blogs
 
-        # localize!
-
         resources :posts do
           resources :comments
         end
-
 
         get 'cafe' => 'cafe#drink'
 
@@ -41,26 +39,6 @@ class SpecRoutes
         # TestController
         get 'test' => "test#foo", :as => :test
         get 'url_for' => 'test#use_url_for_with_implicit_params'
-
-        # delocalize!
-
-        # localize do
-          resources :events do
-            member do
-              post :join
-            end
-          # end
-        end
-
-        # localize(:locale_prefix => false) do
-          resources :users
-        # end
-
-        # localize(:locales => [{:gibberish => :gibb}, :aussie]) do
-          resources :polls
-        # end
-
-        resources :profiles
 
       end
     end
