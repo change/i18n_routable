@@ -3,7 +3,7 @@ require 'active_support/all'
 
 # require 'i18n_routable/version'
 # require 'i18n_routable/config'
-# require 'i18n_routable/mapper'
+require 'i18n_routable/mapper'
 require 'i18n_routable/route_set'
 # require 'i18n_routable/route_set/reverse_route_lookup'
 # require 'i18n_routable/url_options_override'
