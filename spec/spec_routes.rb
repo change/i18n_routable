@@ -25,7 +25,7 @@ class SpecRoutes
 
         resources :blogs
 
-        localize!
+        # localize!
 
         resources :posts do
           resources :comments
@@ -42,23 +42,23 @@ class SpecRoutes
         get 'test' => "test#foo", :as => :test
         get 'url_for' => 'test#use_url_for_with_implicit_params'
 
-        delocalize!
+        # delocalize!
 
-        localize do
+        # localize do
           resources :events do
             member do
               post :join
             end
-          end
+          # end
         end
 
-        localize(:locale_prefix => false) do
+        # localize(:locale_prefix => false) do
           resources :users
-        end
+        # end
 
-        localize(:locales => [{:gibberish => :gibb}, :aussie]) do
+        # localize(:locales => [{:gibberish => :gibb}, :aussie]) do
           resources :polls
-        end
+        # end
 
         resources :profiles
 
