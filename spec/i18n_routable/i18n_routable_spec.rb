@@ -96,12 +96,12 @@ describe I18nRoutable do
   context "incoming routes" do
 
     it 'should route properly' do
-      resolve("/posts").should eql  :action => "index", :controller => "posts"
+      resolve("/posts").should eql  :action => "index", :controller => "posts", :i18n_posts => "posts"
     end
 
     it 'should route a localized path properly' do
-      resolve("/es/puestos").should eql :action => "index", :controller => "posts", :locale => "es"
-      resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA"
+      resolve("/es/puestos").should eql :action => "index", :controller => "posts", :i18n_posts=>"puestos", :locale => "es"
+      resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA", :i18n_posts=>"puestos"
     end
 
     it 'should not route an unlocalized path properly' do
