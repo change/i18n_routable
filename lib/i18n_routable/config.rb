@@ -22,8 +22,18 @@ module I18nRoutable
       end
     end
 
+    def display_locales
+      @@display_locales ||= I18nRoutable.localize_config[:locales].map do |locale|
+        if locale.is_a? Hash
+          locale.keys.first.to_sym
+        else
+          locale.to_sym
+        end
+      end
+    end
+
     def convert_to_display_locale locale
-      I18nRoutable.localize_config[:backend_to_display_locales][locale]
+      I18nRoutable.localize_config[:backend_to_display_locales][locale.to_sym]
     end
 
     def routes_for_locale locale
