@@ -141,6 +141,10 @@ describe I18nRoutable do
       blogs_path.should eql '/blogs'
     end
 
+    it 'should work without passing parameters in a hash' do
+      post_path("post-title").should eql "/posts/post-title"
+    end
+
     it 'should keep the english if the translation is missing' do
       lambda { I18n.translate(:posts, :locale => 'gibb', :raise => true) }.should raise_error(I18n::MissingTranslationData)
       new_post_path(:locale => :gibb).should == "/gibberish/posts/the-new"
