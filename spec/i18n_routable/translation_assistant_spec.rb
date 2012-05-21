@@ -9,8 +9,16 @@ describe I18nRoutable::TranslationAssistant do
       subject.send(:convert_path_to_localized_regexp, path)
     end
 
+    it 'should not segment sections that have no translations' do
+      convert('/blogs').should eql ["/blogs", []]
+      convert('/blogs/new').should eql ["/blogs/:i18n_new", ['new']]
+    end
+
     it "should translate the components of a normal url" do
       convert("/posts").should eql ["/:i18n_posts", ["posts"]]
+    end
+
+    it 'should preserve order' do
       convert("/posts/new").should eql ["/:i18n_posts/:i18n_new", ["posts", "new"]]
     end
 
@@ -21,10 +29,9 @@ describe I18nRoutable::TranslationAssistant do
       convert(':alias/events/:old_action').should eql [":alias/:i18n_events/:old_action", ["events"]]
     end
 
-    it "should preserve order" do
-      convert("/more-posts").should eql ["/:i18n_more_posts", ["more-posts"]]
-      convert("/posts/more-posts").should eql ["/:i18n_posts/:i18n_more_posts", ["posts", "more-posts"]]
-      convert("/more-posts/posts").should eql ["/:i18n_more_posts/:i18n_posts", ["more-posts", "posts"]]
+    it "should only translate segments" do
+      convert("/posts/more-posts").should eql ["/:i18n_posts/more-posts", ["posts"]]
+      convert("/more-posts/posts").should eql ["/more-posts/:i18n_posts", ["posts"]]
     end
   end
 
