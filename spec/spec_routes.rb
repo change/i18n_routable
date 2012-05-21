@@ -23,7 +23,7 @@ class SpecRoutes
         localize! :locales => [{:gibberish => :gibb}, :aussie, :es, :fr, :'fr-CA']
         regexp = I18nRoutable.display_locales.join "|"
         regexp = /#{regexp}/
-        scope "(/:locale)", :locale => regexp do
+        scope "(:locale)", :locale => regexp do
 
           get :constraints => proc { false }, "*path" => "FooController#foo"
 
@@ -46,8 +46,8 @@ class SpecRoutes
           get 'test' => "test#foo", :as => :test
           get 'testing_url_for' => 'test#use_url_for_with_implicit_params'
 
+          root :to => 'test#root'
         end
-        root :to => 'test#root'
       end
     end
 
