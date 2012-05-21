@@ -23,7 +23,6 @@ module I18nRoutable
       def localize! options={}
         I18nRoutable.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
         validate_options!
-        I18nRoutable.localize_config[:regexp] = generate_regular_expression!
         setup_convert_to_display_locale!
       end
 
@@ -46,16 +45,6 @@ module I18nRoutable
         end
       end
 
-      def generate_regular_expression!
-        %r{(?<=^|/)(#{all_possible_route_segments.join '|'})(?=[/?]|$)}
-      end
-
-      def all_possible_route_segments
-        I18nRoutable.backend_locales.map do |locale|
-          I18nRoutable.routes_for_locale(locale).keys
-        end.flatten.uniq
-      end
-
       def validate_options!
         raise ArgumentError, ":locales must be an array, given: #{I18nRoutable.localize_config[:locales].inspect}" unless I18nRoutable.localize_config[:locales].is_a?(Array)
         ensure_all_symbols!
@@ -72,21 +61,6 @@ module I18nRoutable
           else
             raise ArgumentError, "#{locale.inspect} must be a Symbol" unless locale.is_a?(Symbol)
           end
-        end
-      end
-
-      def deep_clone object
-        case object
-        when Hash
-          object.inject({}) do |hsh,(k,v)|
-            hsh.update(k => deep_clone(v))
-          end
-        when Array
-          object.map { |e| deep_clone(e) }
-        when Symbol, TrueClass, FalseClass, NilClass
-          object
-        else
-          object.respond_to?(:dup) ? object.dup : object
         end
       end
 

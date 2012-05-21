@@ -23,18 +23,13 @@ describe I18nRoutable do
     Rails.should be_present
   end
 
-  it 'should generate a regexp' do
-    I18nRoutable.localize_config[:regexp].should be_a(Regexp)
-  end
 
   context 'validating config options' do
     before do
-      @old_regexp = I18nRoutable.localize_config[:regexp]
       @old_conversions_from_backend_to_display_locales = I18nRoutable.localize_config[:backend_to_display_locales]
     end
 
     after do
-      I18nRoutable.localize_config[:regexp] = @old_regexp
       I18nRoutable.localize_config[:backend_to_display_locales] = @old_conversions_from_backend_to_display_locales
     end
 
