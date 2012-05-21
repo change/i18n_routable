@@ -130,6 +130,10 @@ describe I18nRoutable do
 
   context 'outgoing routes' do
 
+    it 'should work with an unlocalized root url' do
+      root_path.should eql '/'
+    end
+
     it 'should generate urls from named_routes' do
       new_post_path.should eql "/posts/new"
       blogs_path.should eql '/blogs'

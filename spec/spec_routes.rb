@@ -45,8 +45,9 @@ class SpecRoutes
           # TestController
           get 'test' => "test#foo", :as => :test
           get 'testing_url_for' => 'test#use_url_for_with_implicit_params'
-        end
 
+        end
+        root :to => 'test#root'
       end
     end
 
