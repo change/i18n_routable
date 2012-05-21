@@ -33,7 +33,13 @@ module I18nRoutable
     end
 
     def convert_to_display_locale locale
+      return nil unless locale.present?
       I18nRoutable.localize_config[:backend_to_display_locales][locale.to_sym]
+    end
+
+    def convert_to_backend_locale locale
+      return nil unless locale.present?
+      I18nRoutable.localize_config[:display_to_backend_locales][locale.to_sym]
     end
 
     def routes_for_locale locale

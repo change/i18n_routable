@@ -8,10 +8,10 @@ module I18nRoutable
       # but in different locales
       def base_named_route_for path, environment = {}
         method = (environment[:method] || "GET").to_s.upcase
-        path = Rack::Mount::Utils.normalize_path(path) unless path =~ %r{://}
+        path = ::Rack::Mount::Utils.normalize_path(path) unless path =~ %r{://}
 
         begin
-          env = Rack::MockRequest.env_for(path, {:method => method})
+          env = ::Rack::MockRequest.env_for(path, {:method => method})
         rescue URI::InvalidURIError => e
           raise ActionController::RoutingError, e.message
         end

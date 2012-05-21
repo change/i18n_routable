@@ -22,10 +22,12 @@ describe I18nRoutable do
   context 'validating config options' do
     before do
       @old_conversions_from_backend_to_display_locales = I18nRoutable.localize_config[:backend_to_display_locales]
+      @old_conversions_from_display_to_backend_locales = I18nRoutable.localize_config[:display_to_backend_locales]
     end
 
     after do
       I18nRoutable.localize_config[:backend_to_display_locales] = @old_conversions_from_backend_to_display_locales
+      I18nRoutable.localize_config[:display_to_backend_locales] = @old_conversions_from_display_to_backend_locales
     end
 
     it 'should not support a symbol for :locales, it must take an array' do
@@ -203,23 +205,23 @@ describe I18nRoutable do
     it 'should return a localized route when using hash_for helpers passing in locale' do
       I18n.locale = 'fr'
       route_hash = hash_for_posts_url(:locale => 'es')
-      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false, :i18n_posts=>"puestos"
+      route_hash.should eql :locale=>'es', :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
       url_for(route_hash).should eql "http://www.example.com/es/puestos"
 
       route_hash = hash_for_posts_url(:locale => :es)
-      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false, :i18n_posts=>"puestos"
+      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
       url_for(route_hash).should eql "http://www.example.com/es/puestos"
     end
 
     it 'should respect I18n.locale' do
       route_hash = hash_for_post_url(:id => 1)
-      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false, :i18n_posts=>"posts"
+      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
       url_for(route_hash).should eql "http://www.example.com/posts/1"
 
       I18n.locale = 'es'
 
       route_hash = hash_for_post_url(:id => 1)
-      route_hash.should eql :id=>1, :locale=>:es, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false, :i18n_posts=>"puestos"
+      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
       url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
     end
 

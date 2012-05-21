@@ -24,6 +24,7 @@ module I18nRoutable
         I18nRoutable.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
         validate_options!
         setup_convert_to_display_locale!
+        setup_convert_to_backend_locale!
       end
 
       private
@@ -38,11 +39,25 @@ module I18nRoutable
       def setup_convert_to_display_locale!
         I18nRoutable.localize_config[:backend_to_display_locales] = I18nRoutable.localize_config[:locales].inject({}) do |hsh, locale|
           if locale.is_a?(Hash)
-            hsh.merge(locale.invert)
+            hsh.merge!(locale.invert)
+            hsh.merge(locale.keys.first => locale.keys.first)
           else
             hsh.update(locale => locale)
           end
         end
+        I18nRoutable.localize_config[:backend_to_display_locales].merge! I18n.default_locale => I18n.default_locale
+      end
+
+      def setup_convert_to_backend_locale!
+        I18nRoutable.localize_config[:display_to_backend_locales] = I18nRoutable.localize_config[:locales].inject({}) do |hsh, locale|
+          if locale.is_a?(Hash)
+            hsh.merge!(locale)
+            hsh.merge(locale.values.first => locale.values.first)
+          else
+            hsh.update(locale => locale)
+          end
+        end
+        I18nRoutable.localize_config[:display_to_backend_locales].merge! I18n.default_locale => I18n.default_locale
       end
 
       def validate_options!
