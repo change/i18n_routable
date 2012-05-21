@@ -2,6 +2,8 @@ module I18nRoutable
   module TranslationAssistant
 
     def convert_path_to_localized_regexp path
+      return [path,[]] if path =~ %r{^/+$} # Root url
+
       new_path, segments = '', []
       new_path << path.split(/(\(.+\))/).map do |component|
         unless component.starts_with?("(")
