@@ -6,13 +6,12 @@ module I18nRoutable
       new_path << path.split(/(\(.+\))/).map do |component|
         unless component.starts_with?("(")
           component.split("/").map do |word|
-            if word.blank? || word.starts_with?(":") || word.starts_with?("*")
+            if word.blank? || word.starts_with?(":") || word.starts_with?("*") || translated_segments(word) == [word]
               word
             else
               segments << word
               ":i18n_#{word.underscore}"
             end
-            # CGI.escape(I18n.translate(word, :locale => backend_locale, :scope => 'routes', :default => word))
           end.join("/")
         else
           component
@@ -29,11 +28,13 @@ module I18nRoutable
     end
 
     def route_constraint_for_segment segment
-      translated_segments = I18nRoutable.backend_locales.map do |locale|
-        I18nRoutable.translate_segment(segment, locale)
-      end.uniq.map{|s| Regexp.escape(s) }
+      Regexp.new translated_segments(segment).map{|s| Regexp.escape(s) } * '|'
+    end
 
-      Regexp.new translated_segments * '|'
+    def translated_segments segment
+      I18nRoutable.backend_locales.map do |locale|
+        I18nRoutable.translate_segment(segment, locale)
+      end.uniq
     end
 
     def translate_segment segment, locale
