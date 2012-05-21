@@ -27,6 +27,13 @@ end
 @route_generator = RouteGenerator.new
 
 Benchmark.bmbm do |x|
+
+  x.report 'generating the urls' do
+    10.times do
+      SpecRoutes.go!
+    end
+  end
+
   x.report 'recognizing urls' do
     TIMES.times do
       hash = resolve("/fr/messages/hello-there/commentaires/the-comment-id/modifier")
