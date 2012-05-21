@@ -5,8 +5,11 @@ module I18nRoutable
       return [path,[]] if path =~ %r{^/+$} # Root url
 
       new_path, segments = '', []
+
       new_path << path.split(/(\(.+\))/).map do |component|
-        unless component.starts_with?("(")
+        if component.starts_with?("(") || component == '//'
+          component
+        else
           component.split("/").map do |word|
             if word.blank? || word.starts_with?(":") || word.starts_with?("*") || translated_segments(word) == [word]
               word
@@ -15,8 +18,6 @@ module I18nRoutable
               ":i18n_#{word.underscore}"
             end
           end.join("/")
-        else
-          component
         end
       end.join
 
