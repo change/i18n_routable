@@ -29,7 +29,7 @@ module I18nRoutable
     end
 
     def route_constraint_for_segment segment
-      translated_segments = I18n.available_locales.map do |locale|
+      translated_segments = I18nRoutable.backend_locales.map do |locale|
         I18nRoutable.translate_segment(segment, locale)
       end.uniq.map{|s| Regexp.escape(s) }
 
