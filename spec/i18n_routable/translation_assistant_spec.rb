@@ -34,7 +34,11 @@ describe I18nRoutable::TranslationAssistant do
       subject.send :route_constraint_for_segment, segment
     end
 
-    it 'should translate' do
+    before do
+      I18n.stub(:available_locales).and_return %w{fr de nl au}
+    end
+
+    it 'should translate in the locales passed in to I18nRoutable' do
       convert("posts").should == /posts|puestos|messages/
     end
 
