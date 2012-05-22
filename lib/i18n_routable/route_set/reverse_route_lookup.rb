@@ -18,13 +18,7 @@ module I18nRoutable
 
         req = @request_class.new(env)
         @set.recognize(req) do |route, matches, params|
-          if route.name
-            if params[:locale].present?
-              return route.name.to_s.sub(/[^_]+_/, '').to_sym
-            else
-              return route.name
-            end
-          end
+          return route.name if route.name
         end
         nil
       end
