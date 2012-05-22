@@ -42,5 +42,5 @@ end
 task :default => :test
 
 task :test do
-  exec 'rspec'
+  exec 'rspec --order random'
 end
