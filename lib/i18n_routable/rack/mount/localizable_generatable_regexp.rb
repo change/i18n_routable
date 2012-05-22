@@ -1,14 +1,14 @@
 module I18nRoutable
   module Rack
     module Mount
-      module LocalizableGeneratableRegexp
+      module LocalizableRoute
 
 
         # this method injects translations into the params based on required_params
         # that start with i18n_
         # :i18n_posts => 'puestos'
         def inject_i18n_translations(params)
-
+          required_params = @conditions[:path_info].required_params
           required_params_to_check = required_params - params.keys
           return unless required_params_to_check
 
@@ -20,11 +20,12 @@ module I18nRoutable
 
         end
 
-        def generate_with_localize(params = {}, recall = {}, options = {})
+        def generate_with_localize(method, params = {}, recall = {}, options = {})
           # set the locale to the params or current
           params[:locale] ||= I18nRoutable.convert_to_backend_locale(params[:locale]) || I18n.locale
           # reject the locale unless we support that locale
           params[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(params[:locale].to_sym)
+          required_defaults = @conditions[:path_info].required_defaults
 
           merged = recall.merge(params)
           should_inject_translations = required_defaults.present? && required_defaults.all? { |k, v| merged[k] == v }
@@ -39,7 +40,7 @@ module I18nRoutable
           end
 
           # call super
-          generate_without_localize(params, recall, options)
+          generate_without_localize(method, params, recall, options)
         end
 
         def self.included base
@@ -51,4 +52,4 @@ module I18nRoutable
   end
 end
 
-Rack::Mount::GeneratableRegexp::InstanceMethods.send :include, I18nRoutable::Rack::Mount::LocalizableGeneratableRegexp
+Rack::Mount::Route.send :include, I18nRoutable::Rack::Mount::LocalizableRoute

@@ -1,6 +1,14 @@
 module I18nRoutable
   module TranslationAssistant
 
+    def tokenized_segment(segment)
+      "i18n_#{segment}".gsub '-', '__'
+    end
+
+    def untokenize_segment segment
+      segment.gsub '__', '-'
+    end
+
     def convert_path_to_localized_regexp path
       return [path,[]] if path =~ %r{^/+$} # Root url
 
@@ -15,7 +23,7 @@ module I18nRoutable
               word
             else
               segments << word
-              ":i18n_#{word.underscore}"
+              ':' + tokenized_segment(word)
             end
           end.join("/")
         end
@@ -26,7 +34,8 @@ module I18nRoutable
 
     def add_segment_constraints constraints, segments
       segments.each do |segment|
-        constraints[:"i18n_#{segment.underscore}"] ||= route_constraint_for_segment(segment)
+        constraint_token = tokenized_segment segment
+        constraints[constraint_token.to_sym] ||= route_constraint_for_segment(segment)
       end
     end
 
@@ -41,6 +50,7 @@ module I18nRoutable
     end
 
     def translate_segment segment, locale
+      segment = untokenize_segment segment
       CGI.escape I18n.t segment, default: segment, scope: 'routes', locale: locale
     end
 
