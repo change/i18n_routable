@@ -25,8 +25,11 @@ describe I18nRoutable::TranslationAssistant do
     it "should ignore param names" do
       convert("/posts/:posts").should eql ["/:i18n_posts/:posts", ["posts"]]
       convert("/posts(/:id)(.:format)").should eql ["/:i18n_posts(/:id)(.:format)", ["posts"]]
-      convert('all-the-posts(/:action(/:id))').should eql [":i18n_all_the_posts(/:action(/:id))", ["all-the-posts"]]
       convert(':alias/events/:old_action').should eql [":alias/:i18n_events/:old_action", ["events"]]
+    end
+
+    it 'should double underscore dashes' do
+      convert('all-the-posts(/:action(/:id))').should eql [":i18n_all__the__posts(/:action(/:id))", ["all-the-posts"]]
     end
 
     it "should only translate segments" do

@@ -111,7 +111,7 @@ describe I18nRoutable do
     end
 
     it 'should recognize un-resourcful urls' do
-      resolve('/es/todos-los-puestos').should eql :display=>"all", :controller=>"posts", :action=>"index", :locale=>"es", :i18n_all_the_posts=>"todos-los-puestos"
+      resolve('/es/todos-los-puestos').should eql :display=>"all", :controller=>"posts", :action=>"index", :locale=>"es", :i18n_all__the__posts=>"todos-los-puestos"
     end
 
 
@@ -162,6 +162,10 @@ describe I18nRoutable do
 
       I18n.locale = :es
       posts_path.should eql "/es/puestos"
+    end
+
+    it 'should work when the url has dashes' do
+      all_posts_path.should eql '/all-the-posts'
     end
 
     it "should accept :locale param as an option" do
