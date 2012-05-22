@@ -4,11 +4,18 @@ module I18nRoutable
       module LocalizableRoute
 
 
+        def reject_unnecessary_i18n_params!(params, required_params)
+          params.reject! do |(param_name, value)|
+            param_name.to_s.starts_with?('i18n_') && !required_params.include?(param_name)
+          end
+        end
+
         # this method injects translations into the params based on required_params
         # that start with i18n_
         # :i18n_posts => 'puestos'
         def inject_i18n_translations(params)
           required_params = @conditions[:path_info].required_params
+          reject_unnecessary_i18n_params!(params, required_params)
           required_params_to_check = required_params - params.keys
           return unless required_params_to_check
 

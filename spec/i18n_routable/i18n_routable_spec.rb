@@ -141,6 +141,11 @@ describe I18nRoutable do
       blogs_path.should eql '/blogs'
     end
 
+    it 'should reject unnecessary :i18n_* params' do
+      I18n.locale = :es
+      new_post_path(:i18n_edit => 'editar').should eql '/es/puestos/neuvo'
+    end
+
     it 'should work without passing parameters in a hash' do
       post_path("post-title").should eql "/posts/post-title"
     end
