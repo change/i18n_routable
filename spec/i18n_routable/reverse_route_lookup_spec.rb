@@ -17,7 +17,7 @@ describe I18nRoutable::RouteSet::ReverseRouteLookup do
     it 'should remove the locale from the name' do
       base_named_route_for('/es/puestos').should eql :posts
       base_named_route_for('/es/puestos/2').should eql :post
-
+      base_named_route_for('/es/puestos/neuvo').should eql :new_post
     end
 
     it "should not fail under a route that doesn't exist" do
