@@ -23,6 +23,11 @@ describe I18nRoutable::TranslationAssistant do
       convert("/about(/*anything)").should eql ["/:i18n_about(/*anything)", ["about"]]
     end
 
+    it 'should respect optional arguments within optional arguments' do
+      convert("first/second(/:group(/:individual))").should eql ["/:i18n_first/:i18n_second(/:group(:/individual))", ["first", "second"]]
+      convert("first/second(/group(/:group))").should eql ["/:i18n_first/:i18n_second(/:i18n_group(:/group))", ["first", "second", "group"]]
+    end
+
     it 'should preserve order' do
       convert("/posts/new").should eql ["/:i18n_posts/:i18n_new", ["posts", "new"]]
     end

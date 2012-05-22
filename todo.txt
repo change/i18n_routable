@@ -1,0 +1,2 @@
+auto gen locale scope
+I18n.available_locales in translation_assistant is bad
