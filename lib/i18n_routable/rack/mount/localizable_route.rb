@@ -25,6 +25,7 @@ module I18nRoutable
           params[:locale] ||= I18nRoutable.convert_to_backend_locale(params[:locale]) || I18n.locale
           # reject the locale unless we support that locale
           params[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(params[:locale].to_sym)
+
           required_defaults = @conditions[:path_info].required_defaults
 
           merged = recall.merge(params)
