@@ -110,6 +110,11 @@ describe I18nRoutable do
       resolve('/es/todos-los-puestos').should eql :display=>"all", :controller=>"posts", :action=>"index", :locale=>"es", :i18n_all__the__posts=>"todos-los-puestos"
     end
 
+    it 'should recognize * routes' do
+      resolve('/es/sobre').should eql :controller => "cms", :action => 'show', :locale => 'es', :i18n_about => 'sobre'
+      resolve('/es/sobre/another-page').should eql :controller => "cms", :action => 'show', :locale => 'es', :i18n_about => 'sobre', :anything => 'another-page'
+    end
+
 
   end
 
@@ -167,6 +172,11 @@ describe I18nRoutable do
 
     it 'should work when the url has dashes' do
       all_posts_path.should eql '/all-the-posts'
+    end
+
+    it 'should work for *parameters' do
+      about_path(:locale => 'es').should eql '/es/sobre'
+      about_path(:locale => 'es', :anything => 'extra-page').should eql '/es/sobre/extra-page'
     end
 
     it "should accept :locale param as an option" do

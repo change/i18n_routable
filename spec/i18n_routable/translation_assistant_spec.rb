@@ -18,6 +18,11 @@ describe I18nRoutable::TranslationAssistant do
       convert("/posts").should eql ["/:i18n_posts", ["posts"]]
     end
 
+    it "should translate the components of a glob url" do
+      convert("/about").should eql ["/:i18n_about", ["about"]]
+      convert("/about(/*anything)").should eql ["/:i18n_about(/*anything)", ["about"]]
+    end
+
     it 'should preserve order' do
       convert("/posts/new").should eql ["/:i18n_posts/:i18n_new", ["posts", "new"]]
     end

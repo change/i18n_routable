@@ -11,7 +11,7 @@ es:
     bypass_action_controller: derivacion_controlador_de_accion
     test: prueba
     testing_url_for: "url-para-probar"
-
+    about: sobre
 fr:
   routes:
     new: nouvelles

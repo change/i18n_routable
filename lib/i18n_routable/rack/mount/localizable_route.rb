@@ -1,3 +1,4 @@
+# outoing route helper that injects i18n_ paramsto generate the route
 module I18nRoutable
   module Rack
     module Mount
