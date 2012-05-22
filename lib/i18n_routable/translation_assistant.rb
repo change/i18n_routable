@@ -14,7 +14,7 @@ module I18nRoutable
 
       new_path, segments = '', []
 
-      new_path << path.split(/(\(.+\))/).map do |component|
+      new_path << path.split(/(\(.+?\))/).map do |component|
         if component.starts_with?("(") || component == '//'
           component
         else

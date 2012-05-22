@@ -42,6 +42,8 @@ class SpecRoutes
 
           match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }
 
+          match 'about(/*anything)' => 'cms#show', :as => :about
+
           # TestController
           get 'test' => "test#foo", :as => :test
           get 'testing_url_for' => 'test#use_url_for_with_implicit_params'
