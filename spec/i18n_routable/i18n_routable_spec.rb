@@ -23,14 +23,26 @@ describe I18nRoutable do
     Rails.should be_present
   end
 
+  it 'should generate a regexp' do
+    I18nRoutable.localize_config[:regexp].should be_a(Regexp)
+  end
+
   context 'validating config options' do
+    before do
+      @old_regexp = I18nRoutable.localize_config[:regexp]
+      @old_conversions_from_backend_to_display_locales = I18nRoutable.localize_config[:backend_to_display_locales]
+    end
+
+    after do
+      I18nRoutable.localize_config[:regexp] = @old_regexp
+      I18nRoutable.localize_config[:backend_to_display_locales] = @old_conversions_from_backend_to_display_locales
+    end
 
     it 'should not support a symbol for :locales, it must take an array' do
       lambda do
         SpecRoutes.always_new_router.draw do
-          localize :locales => :fr do
-            resources :dogs
-          end
+          localize! :locales => :fr
+          resources :dogs
         end
       end.should raise_error(ArgumentError)
     end
@@ -38,72 +50,110 @@ describe I18nRoutable do
     it 'should not support invalid options' do
       lambda do
         SpecRoutes.always_new_router.draw do
-          localize :foo => :boo do
-            resources :dogs
-          end
+          localize! :foo => :boo
+          resources :dogs
         end
       end.should raise_error(ArgumentError)
     end
 
+    it 'should not support any strings for locales in a value' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize! :locales => { :gibberish => 'hey' }
+          resources :dogs
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should not support any strings for locales in a key' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize! :locales => { 'gibberish' => :hey }
+          resources :dogs
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should not support any strings for stand alone locales' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize! :locales => [{:gibberish => :hey}, 'es']
+          resources :dogs
+        end
+      end.should raise_error(ArgumentError)
+    end
+
+    it 'should not support any locale hashes with multiple key/value pairs' do
+      lambda do
+        SpecRoutes.always_new_router.draw do
+          localize! :locales => [{:gibberish => :hey, :not => :supported}, :es]
+          resources :dogs
+        end
+      end.should raise_error(ArgumentError)
+    end
   end
 
   context "incoming routes" do
 
     it 'should route properly' do
-      resolve("/posts").should eql :action => "index", :controller => "posts"
+      resolve("/posts").should eql  :action => "index", :controller => "posts", :i18n_posts => "posts"
     end
 
     it 'should route a localized path properly' do
-      resolve("/es/puestos").should eql :action => "index", :controller => "posts", :locale => "es"
-      resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA"
-    end
-
-    it 'should not route an unlocalized path properly' do
-      lambda { resolve("/es/blogs") }.should raise_error(ActionController::RoutingError)
-      lambda { resolve("/fr/profils") }.should raise_error(ActionController::RoutingError)
-    end
-
-    it 'should not prefix the locale on unprefixed routes' do
-      lambda { resolve("/es/usuarios") }.should raise_error(ActionController::RoutingError)
-      resolve("/usuarios").should eql  :action => "index", :controller => "users", :locale => "es"
-      resolve("/utilisateurs").should eql :action => "index", :controller => "users", :locale => "fr"
+      resolve("/es/puestos").should eql :action => "index", :controller => "posts", :i18n_posts=>"puestos", :locale => "es"
+      resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA", :i18n_test=>"canada_test"
     end
 
     it 'should resolve custom actions' do
-      resolve("/es/eventos/1/unirse", :post).should eql :action => "join", :id => "1", :controller => "events", :locale => "es"
+      resolve("/es/puestos/1/unirse", :post).should eql :action=>"join", :controller=>"posts", :locale=>"es", :i18n_posts=>"puestos", :id=>"1", :i18n_join=>"unirse"
     end
 
     it 'should resolve nested resources' do
-      expected = { :action => "edit", :post_id => "hello-there", :id => 'the-comment-id', :controller => "comments", :locale => "fr" }
+      expected = { :action=>"edit", :controller=>"comments", :locale=>"fr", :i18n_posts=>"messages", :post_id=>"hello-there", :i18n_comments=>"commentaires", :id=>"the-comment-id", :i18n_edit=>"modifier" }
       resolve("/fr/messages/hello-there/commentaires/the-comment-id/modifier").should eql expected
     end
 
-    it "should not translate a route for an unexisting translation" do
-      resolve("/gibberish/polls/").should eql  :action => "index", :controller => "polls", :locale => "gibberish"
-      resolve("/gibberish/polls/the-new").should eql  :action => "new", :controller => "polls", :locale => "gibberish"
+    it "should keep the default value for untranslated route segments" do
+      resolve("/gibberish/posts/").should eql :action=>"index", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts"
+      resolve("/gibberish/posts/the-new").should eql :action=>"new", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts", :i18n_new=>"the-new"
     end
 
     it 'should recognize un-resourcful urls' do
-      resolve('/es/todos-los-puestos').should eql :display => "all", :locale => "es", :action => "index", :controller => "posts"
+      resolve('/es/todos-los-puestos').should eql :display=>"all", :controller=>"posts", :action=>"index", :locale=>"es", :i18n_all_the_posts=>"todos-los-puestos"
     end
+
 
   end
 
   context "utf-8 routes" do
+
     it "should escape outgoing routes" do
       I18n.locale = :es
       cafe_path.should eql '/es/caf%C3%A9'
     end
+
     it 'should resolve incoming escaped routes' do
-      resolve('/es/caf%C3%A9').should eql :locale => "es", :action => "drink", :controller => "cafe"
+      resolve('/es/caf%C3%A9').should eql :action=>"drink", :controller=>"cafe", :locale=>"es", :i18n_cafe=>"caf\xC3\xA9"
+
     end
   end
 
-  context '#url helpers' do
+  context 'outgoing routes' do
 
     it 'should generate urls from named_routes' do
       new_post_path.should eql "/posts/new"
       blogs_path.should eql '/blogs'
+    end
+
+    it 'should keep the english if the translation is missing' do
+      lambda { I18n.translate(:posts, :locale => 'gibb', :raise => true) }.should raise_error(I18n::MissingTranslationData)
+      new_post_path(:locale => :gibb).should == "/gibberish/posts/the-new"
+    end
+
+    it 'should work for both _path and _url' do
+      I18n.locale = :es
+      posts_path.should eql "/es/puestos"
+      posts_url.should eql "http://www.example.com/es/puestos"
     end
 
     it 'should change the route if the global locale changes' do
@@ -114,32 +164,18 @@ describe I18nRoutable do
       posts_path.should eql "/es/puestos"
     end
 
-    it "should create named routes with locale prefixes" do
-      es_posts_path.should eql "/es/puestos"
-      fr_new_event_path.should eql "/fr/evenements/nouvelles"
-      frca_new_event_path.should eql "/fr-CA/evenements/nouvelles"
-    end
-
-    it "should create named routes without locale prefixes when specified" do
-      es_users_path.should eql "/usuarios"
-      new_user_path(:locale => :fr).should eql "/utilisateurs/nouvelles"
-    end
-
-    it "should not create a named route for the default locale" do
-      lambda { en_posts_path }.should raise_error(NameError)
-    end
-
-    it "should not create named routes for unlocalized routes" do
-      lambda { es_blogs_path }.should raise_error(NameError)
-      lambda { fr_profiles_path }.should raise_error(NameError)
-    end
-
     it "should accept :locale param as an option" do
       posts_path(:locale => :es).should eql "/es/puestos"
+      # Thread.current[:WTF] = true
       posts_path(:locale => :'fr-CA').should eql "/fr-CA/messages"
       posts_path(:locale => I18n.default_locale).should eql posts_path
+    end
+
+    it 'should override I18n.locale if :locale is passed in' do
       I18n.locale = :es
       posts_path(:locale => :en).should eql "/posts" # option overrides I18n.locale
+      I18n.locale = :en
+      posts_path(:locale => :es).should eql "/es/puestos" # option overrides I18n.locale
     end
 
     it "should accept :locale param as a symbol or string" do
@@ -147,18 +183,12 @@ describe I18nRoutable do
       posts_path(:locale => 'en').should eql "/posts" # option overrides I18n.locale
     end
 
-    it "should have a precendence of named route over locale param" do
-      es_posts_path(:locale => :en).should eql '/es/puestos'
+    it "should not translate params" do
+      posts_path(:locale => 'fr', :new => 'commentaires').should eql '/fr/messages?new=commentaires'
     end
 
     it "should understand nested resources" do
-      fr_new_post_comment_path(:post_id => 12, :random => 'param').should eql '/fr/messages/12/commentaires/nouvelles?random=param'
-    end
-
-    it "should create named url helpers" do
-      es_posts_url.should eql "http://www.example.com/es/puestos"
-      I18n.locale = :es
-      post_url(2).should eql "http://www.example.com/es/puestos/2"
+      new_post_comment_path(:locale => 'fr', :post_id => 12, :random => 'param').should eql '/fr/messages/12/commentaires/nouvelles?random=param'
     end
 
     it 'should render the default locale if given a bad locale' do
@@ -167,22 +197,36 @@ describe I18nRoutable do
 
     it 'should understand the difference between display locales and backend locales' do
       I18n.locale = :gibb
-      new_poll_url.should eql "http://www.example.com/gibberish/polls/the-new"
-      gibb_new_poll_url.should eql "http://www.example.com/gibberish/polls/the-new"
+      new_post_url.should eql "http://www.example.com/gibberish/posts/the-new"
+      I18n.locale = :en
+      new_post_url(:locale => :gibb).should eql "http://www.example.com/gibberish/posts/the-new"
     end
 
   end
 
   context 'hash_for helpers' do
 
-    it 'should return a localized route when using hash_for helpers' do
-      hash_for_posts_url(:locale => 'es').should eql :action => "index", :controller => "posts", :use_route => "es_posts", :only_path => false
+    it 'should return a localized route when using hash_for helpers passing in locale' do
+      I18n.locale = 'fr'
+      route_hash = hash_for_posts_url(:locale => 'es')
+      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false, :i18n_posts=>"puestos"
+      url_for(route_hash).should eql "http://www.example.com/es/puestos"
+
+      route_hash = hash_for_posts_url(:locale => :es)
+      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false, :i18n_posts=>"puestos"
+      url_for(route_hash).should eql "http://www.example.com/es/puestos"
     end
 
     it 'should respect I18n.locale' do
-      hash_for_post_url(:id => 1).should eql :action => "show", :controller => "posts", :use_route => "post", :id => 1, :only_path => false
+      route_hash = hash_for_post_url(:id => 1)
+      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false, :i18n_posts=>"posts"
+      url_for(route_hash).should eql "http://www.example.com/posts/1"
+
       I18n.locale = 'es'
-      hash_for_post_url(:id => 1).should eql :action => "show", :controller => "posts", :use_route => "es_post", :id => 1, :only_path => false
+
+      route_hash = hash_for_post_url(:id => 1)
+      route_hash.should eql :id=>1, :locale=>:es, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false, :i18n_posts=>"puestos"
+      url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
     end
 
   end
@@ -199,14 +243,11 @@ describe I18nRoutable do
     it 'should remove the locale from the name' do
       base_named_route_for('/es/puestos').should eql :posts
       base_named_route_for('/es/puestos/2').should eql :post
+
     end
 
     it "should not fail under a route that doesn't exist" do
       base_named_route_for("/route-that-doesn't-exist").should be_nil
-    end
-
-    it 'should work when the display locale is different from the backend locale' do
-      base_named_route_for('/gibberish/polls/the-new').should eql :new_poll
     end
 
   end

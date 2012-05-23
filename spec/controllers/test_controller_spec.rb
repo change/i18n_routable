@@ -9,7 +9,7 @@ class TestController < ActionController::Base
   def use_url_for_with_implicit_params
 
     # url_for should infer the controller from the current controller
-    render :text => url_for(:action => 'foo', :only_path => true)
+    render :text => url_for(:action => 'foo', :only_path => true, :i18n_test => 'prueba', :locale => 'es')
 
   end
 
@@ -41,8 +41,8 @@ describe TestController do
       controller.send(:test_path).should eql '/test'
 
       # path parameters should be set properly when doing this
-      get :use_url_for_with_implicit_params
-      response.body.should == '/test'
+      get :use_url_for_with_implicit_params, :i18n_testing_url_for => 'testing_url_for'
+      response.body.should == '/es/prueba'
     end
 
   end

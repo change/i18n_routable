@@ -23,18 +23,8 @@ module I18nRoutable
       def localize! options={}
         I18nRoutable.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
         validate_options!
-      end
-
-      def delocalize!
-        I18nRoutable.localize_config = nil
-      end
-
-      def localize options={}
-        old_localized_config = I18nRoutable.localize_config
-        localize! options
-        yield if block_given?
-      ensure
-        I18nRoutable.localize_config = old_localized_config
+        I18nRoutable.localize_config[:regexp] = generate_regular_expression!
+        setup_convert_to_display_locale!
       end
 
       private
@@ -46,10 +36,43 @@ module I18nRoutable
         }
       end
 
+      def setup_convert_to_display_locale!
+        I18nRoutable.localize_config[:backend_to_display_locales] = I18nRoutable.localize_config[:locales].inject({}) do |hsh, locale|
+          if locale.is_a?(Hash)
+            hsh.merge(locale.invert)
+          else
+            hsh.update(locale => locale)
+          end
+        end
+      end
+
+      def generate_regular_expression!
+        %r{(?<=^|/)(#{all_possible_route_segments.join '|'})(?=[/?]|$)}
+      end
+
+      def all_possible_route_segments
+        I18nRoutable.backend_locales.map do |locale|
+          I18nRoutable.routes_for_locale(locale).keys
+        end.flatten.uniq
+      end
+
       def validate_options!
         raise ArgumentError, ":locales must be an array, given: #{I18nRoutable.localize_config[:locales].inspect}" unless I18nRoutable.localize_config[:locales].is_a?(Array)
+        ensure_all_symbols!
         extra_keys = I18nRoutable.localize_config.except(*default_localize_options.keys).keys
         raise ArgumentError, "Unsupported options: #{extra_keys.inspect}" if extra_keys.present?
+      end
+
+      def ensure_all_symbols!
+        I18nRoutable.localize_config[:locales].each do |locale|
+          if locale.is_a?(Hash)
+            raise ArgumentError, "#{locale.inspect} can only have 1 key and 1 value" unless locale.keys.length == 1
+            raise ArgumentError, "#{locale.keys.first.inspect} must be a Symbol" unless locale.keys.first.is_a?(Symbol)
+            raise ArgumentError, "#{locale.values.first.inspect} must be a Symbol" unless locale.values.first.is_a?(Symbol)
+          else
+            raise ArgumentError, "#{locale.inspect} must be a Symbol" unless locale.is_a?(Symbol)
+          end
+        end
       end
 
       def deep_clone object

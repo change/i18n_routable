@@ -20,47 +20,32 @@ class SpecRoutes
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
+        localize! :locales => [{:gibberish => :gibb}, :aussie, :es, :fr, :'fr-CA']
+        regexp = I18nRoutable.display_locales.join "|"
+        regexp = /#{regexp}/
+        scope "(/:locale)", :locale => regexp do
 
-        get :constraints => proc { false }, "*path" => "FooController#foo"
+          get :constraints => proc { false }, "*path" => "FooController#foo"
 
-        resources :blogs
+          resources :blogs
 
-        localize!
-
-        resources :posts do
-          resources :comments
-        end
-
-
-        get 'cafe' => 'cafe#drink'
-
-        get 'all-the-posts' => 'posts#index', :as => :all_posts, :defaults => {:display => 'all'}
-
-        match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }
-
-        # TestController
-        get 'test' => "test#foo", :as => :test
-        get 'url_for' => 'test#use_url_for_with_implicit_params'
-
-        delocalize!
-
-        localize do
-          resources :events do
+          resources :posts do
             member do
               post :join
             end
+            resources :comments
           end
-        end
 
-        localize(:locale_prefix => false) do
-          resources :users
-        end
+          get 'cafe' => 'cafe#drink'
 
-        localize(:locales => [{:gibberish => :gibb}, :aussie]) do
-          resources :polls
-        end
+          get 'all-the-posts' => 'posts#index', :as => :all_posts, :defaults => {:display => 'all'}
 
-        resources :profiles
+          match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }
+
+          # TestController
+          get 'test' => "test#foo", :as => :test
+          get 'testing_url_for' => 'test#use_url_for_with_implicit_params'
+        end
 
       end
     end
