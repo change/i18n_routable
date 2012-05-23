@@ -10,12 +10,17 @@ This is used to make your routes internationalized! It's a whole lot of code for
 ```ruby
 Rails.app.routes.draw do
 
-  resources :users # not localized routes
+  localize! :locales => [:es, :fr]
+  regexp = I18nRoutable.display_locales.join "|"
+  regexp = /#{regexp}/
+  scope "(:locale)", :locale => regexp do
 
-  localize do # begin localized routes
+    resources :blogs # no translations
+
     resources :posts do
       resources :comments
     end
+
   end
 
 end
@@ -25,8 +30,6 @@ options to localize are:
 
   * :locales. This is an array of the locales to support
     * default - I18n.available_locales - I18n.default_locale
-  * :locale_prefix. This specifies whether or not to prefix each routes with that locale. With locale_prefix => true, you'll have /posts and /es/puestos. With :locale_prefix => false, you'll have /posts and /puestos. Assuming an es locale.
-    * default - true
 
 ## Translating the routes ##
 
@@ -49,44 +52,30 @@ Here's an example yaml file assuming es and fr locales:
 
 ## What routes does this make ##
 
-assuming "en" is the default locale and 'es' is the other avaialable locale:
+assuming "en" is the default locale and the other avaialable locales are 'es' and 'fr':
 
             NAME          VERB                         PATH                                        REQUIREMENTS
-                   users GET    /users(.:format)                                   {:controller=>"users", :action=>"index"}
-                         POST   /users(.:format)                                   {:controller=>"users", :action=>"create"}
-                new_user GET    /users/new(.:format)                               {:controller=>"users", :action=>"new"}
-               edit_user GET    /users/:id/edit(.:format)                          {:controller=>"users", :action=>"edit"}
-                    user GET    /users/:id(.:format)                               {:controller=>"users", :action=>"show"}
-                         PUT    /users/:id(.:format)                               {:controller=>"users", :action=>"update"}
-                         DELETE /users/:id(.:format)                               {:controller=>"users", :action=>"destroy"}
-           post_comments GET    /posts/:post_id/comments(.:format)                 {:controller=>"comments", :action=>"index"}
-        es_post_comments GET    /es/puestos/:post_id/comments(.:format)            {:controller=>"comments", :action=>"index"}
-                         POST   /posts/:post_id/comments(.:format)                 {:controller=>"comments", :action=>"create"}
-                         POST   /es/puestos/:post_id/comments(.:format)            {:controller=>"comments", :action=>"create"}
-        new_post_comment GET    /posts/:post_id/comments/new(.:format)             {:controller=>"comments", :action=>"new"}
-     es_new_post_comment GET    /es/puestos/:post_id/comments/neuvo(.:format)      {:controller=>"comments", :action=>"new"}
-       edit_post_comment GET    /posts/:post_id/comments/:id/edit(.:format)        {:controller=>"comments", :action=>"edit"}
-    es_edit_post_comment GET    /es/puestos/:post_id/comments/:id/editar(.:format) {:controller=>"comments", :action=>"edit"}
-            post_comment GET    /posts/:post_id/comments/:id(.:format)             {:controller=>"comments", :action=>"show"}
-         es_post_comment GET    /es/puestos/:post_id/comments/:id(.:format)        {:controller=>"comments", :action=>"show"}
-                         PUT    /posts/:post_id/comments/:id(.:format)             {:controller=>"comments", :action=>"update"}
-                         PUT    /es/puestos/:post_id/comments/:id(.:format)        {:controller=>"comments", :action=>"update"}
-                         DELETE /posts/:post_id/comments/:id(.:format)             {:controller=>"comments", :action=>"destroy"}
-                         DELETE /es/puestos/:post_id/comments/:id(.:format)        {:controller=>"comments", :action=>"destroy"}
-                   posts GET    /posts(.:format)                                   {:controller=>"posts", :action=>"index"}
-                es_posts GET    /es/puestos(.:format)                              {:controller=>"posts", :action=>"index"}
-                         POST   /posts(.:format)                                   {:controller=>"posts", :action=>"create"}
-                         POST   /es/puestos(.:format)                              {:controller=>"posts", :action=>"create"}
-                new_post GET    /posts/new(.:format)                               {:controller=>"posts", :action=>"new"}
-             es_new_post GET    /es/puestos/neuvo(.:format)                        {:controller=>"posts", :action=>"new"}
-               edit_post GET    /posts/:id/edit(.:format)                          {:controller=>"posts", :action=>"edit"}
-            es_edit_post GET    /es/puestos/:id/editar(.:format)                   {:controller=>"posts", :action=>"edit"}
-                    post GET    /posts/:id(.:format)                               {:controller=>"posts", :action=>"show"}
-                 es_post GET    /es/puestos/:id(.:format)                          {:controller=>"posts", :action=>"show"}
-                         PUT    /posts/:id(.:format)                               {:controller=>"posts", :action=>"update"}
-                         PUT    /es/puestos/:id(.:format)                          {:controller=>"posts", :action=>"update"}
-                         DELETE /posts/:id(.:format)                               {:controller=>"posts", :action=>"destroy"}
-                         DELETE /es/puestos/:id(.:format)                          {:controller=>"posts", :action=>"destroy"}
+    post_comments GET    (/:locale)/:i18n_posts/:post_id/:i18n_comments(.:format)                {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :locale=>/es|fr/, :action=>"index", :controller=>"comments"}
+                  POST   (/:locale)/:i18n_posts/:post_id/:i18n_comments(.:format)                {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :locale=>/es|fr/, :action=>"create", :controller=>"comments"}
+ new_post_comment GET    (/:locale)/:i18n_posts/:post_id/:i18n_comments/:i18n_new(.:format)      {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :i18n_new=>/neuvo|nouvelles/, :locale=>/es|fr/, :action=>"new", :controller=>"comments"}
+edit_post_comment GET    (/:locale)/:i18n_posts/:post_id/:i18n_comments/:id/:i18n_edit(.:format) {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :i18n_edit=>/editar|modifier/, :locale=>/es|fr/, :action=>"edit", :controller=>"comments"}
+     post_comment GET    (/:locale)/:i18n_posts/:post_id/:i18n_comments/:id(.:format)            {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :locale=>/es|fr/, :action=>"show", :controller=>"comments"}
+                  PUT    (/:locale)/:i18n_posts/:post_id/:i18n_comments/:id(.:format)            {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :locale=>/es|fr/, :action=>"update", :controller=>"comments"}
+                  DELETE (/:locale)/:i18n_posts/:post_id/:i18n_comments/:id(.:format)            {:i18n_posts=>/puestos|messages/, :i18n_comments=>/comments|commentaires/, :locale=>/es|fr/, :action=>"destroy", :controller=>"comments"}
+            posts GET    (/:locale)/:i18n_posts(.:format)                                        {:i18n_posts=>/puestos|messages/, :locale=>/es|fr/, :action=>"index", :controller=>"posts"}
+                  POST   (/:locale)/:i18n_posts(.:format)                                        {:i18n_posts=>/puestos|messages/, :locale=>/es|fr/, :action=>"create", :controller=>"posts"}
+         new_post GET    (/:locale)/:i18n_posts/:i18n_new(.:format)                              {:i18n_posts=>/puestos|messages/, :i18n_new=>/neuvo|nouvelles/, :locale=>/es|fr/, :action=>"new", :controller=>"posts"}
+        edit_post GET    (/:locale)/:i18n_posts/:id/:i18n_edit(.:format)                         {:i18n_posts=>/puestos|messages/, :i18n_edit=>/editar|modifier/, :locale=>/es|fr/, :action=>"edit", :controller=>"posts"}
+             post GET    (/:locale)/:i18n_posts/:id(.:format)                                    {:i18n_posts=>/puestos|messages/, :locale=>/es|fr/, :action=>"show", :controller=>"posts"}
+                  PUT    (/:locale)/:i18n_posts/:id(.:format)                                    {:i18n_posts=>/puestos|messages/, :locale=>/es|fr/, :action=>"update", :controller=>"posts"}
+                  DELETE (/:locale)/:i18n_posts/:id(.:format)                                    {:i18n_posts=>/puestos|messages/, :locale=>/es|fr/, :action=>"destroy", :controller=>"posts"}
+            blogs GET    (/:locale)/blogs(.:format)                                              {:locale=>/es|fr/, :action=>"index", :controller=>"blogs"}
+                  POST   (/:locale)/blogs(.:format)                                              {:locale=>/es|fr/, :action=>"create", :controller=>"blogs"}
+         new_blog GET    (/:locale)/blogs/:i18n_new(.:format)                                    {:i18n_new=>/neuvo|nouvelles/, :locale=>/es|fr/, :action=>"new", :controller=>"blogs"}
+        edit_blog GET    (/:locale)/blogs/:id/:i18n_edit(.:format)                               {:i18n_edit=>/editar|modifier/, :locale=>/es|fr/, :action=>"edit", :controller=>"blogs"}
+             blog GET    (/:locale)/blogs/:id(.:format)                                          {:locale=>/es|fr/, :action=>"show", :controller=>"blogs"}
+                  PUT    (/:locale)/blogs/:id(.:format)                                          {:locale=>/es|fr/, :action=>"update", :controller=>"blogs"}
+                  DELETE (/:locale)/blogs/:id(.:format)                                          {:locale=>/es|fr/, :action=>"destroy", :controller=>"blogs"}
 
 ## How do I use it in my codes? ##
 
@@ -96,39 +85,22 @@ For the most part, it should be invisible. Injected into your params hash you'll
 
 Now you're locale is setup. Let's say your locale is set to 'es', calling `posts_url` will behind the scenes call `es_posts_url`. You can override the locale by passing :locale to your url calls, such as `posts_url(:locale => 'en')`. To see a full list of options and rules, checkout the tests. But the idea is to never need to pass locale or worry about your routes.
 
-## TESTING ##
-
-Add `require 'i18n_routable/test_case'` to your test environment loader.
-
 ## FAQ ##
 
-Q: What if I don't like the block syntax?
-A: You can use the bang methods instead!
-
-```ruby
-Rails.app.routes.draw do
-  localize!
-  resources :posts
-  delocalize!
-end
-```
+Q: What if I don't like the scoping with the locale
+A: Then don't.
 
 Q: What support does i18n_routable have for Unicode ?
 A: All routes are CGI escaped for support in browsers. Modern browsers will properly display unicode characters in the url.
 
-Q: My routes output is now huge! Why do you make a new route for every locale?
-A: We want to harnass the power of the rails router. So instead of rewriting a lot of the funcionality it provides, we just create more routes for you, and we do some magic to make sure the proper locale helper is called. We're also not doing any regular expression checking for locale support, so each route should be a bit faster.
-
 Q: Can the default locale be prefixed with the locale?
-A: The default locale cannot be prefixed.
+A: Yes. But you'd have to change the regexp from the one described above.
 
 Q: What if I want to show the users a different locale than what I store it in the backend?
 A: That's easy, just pass a hash as an array item in your localize call such as
 
 ```ruby
-localize [{:display_name => :locale}, {:second_display => :second_locale}, :locale3, :locale4] do
-  ...
-end
+localize! :locales => [{:display_name => :locale}, {:second_display => :second_locale}, :locale3, :locale4]
 ```
 
 ## Thanks ##
