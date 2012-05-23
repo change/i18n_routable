@@ -28,7 +28,7 @@ module I18nRoutable
 
         if i18n_segment.present?
           # Only add it to be translated if there are translations
-          if translated_segments(i18n_segment) != [i18n_segment]
+          if I18nRoutable.route_translation_cache[i18n_segment]
             new_path << ":#{tokenize_segment i18n_segment}"
             segments << i18n_segment
           else
@@ -53,13 +53,7 @@ module I18nRoutable
     end
 
     def route_constraint_for_segment segment
-      Regexp.new translated_segments(segment).map{|s| Regexp.escape(s) } * '|'
-    end
-
-    def translated_segments segment
-      I18nRoutable.backend_locales.map do |locale|
-        I18nRoutable.translate_segment(segment, locale)
-      end.uniq
+      I18nRoutable.route_translation_cache[segment]
     end
 
     def translate_segment segment, locale

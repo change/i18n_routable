@@ -1,10 +1,18 @@
+# encoding: utf-8
 require 'spec_helper'
 describe I18nRoutable::TranslationAssistant do
 
   subject { I18nRoutable }
 
-  context '#convert_path_to_localized_regexp' do
+    before do
+      I18nRoutable.localizing!
+    end
 
+    after do
+      I18nRoutable.not_localizing!
+    end
+
+  context '#convert_path_to_localized_regexp' do
 
     def convert path
       subject.convert_path_to_localized_regexp path
@@ -64,11 +72,11 @@ describe I18nRoutable::TranslationAssistant do
     end
 
     it 'should regexp escape' do
-      convert("ur.l").should == /ur\.l/
+      convert("all-the-posts").should == /all\-the\-posts|todos\-los\-puestos/
     end
 
     it 'should cgi escape' do
-      convert("ur*l").should == /ur%2Al/
+      convert("cafe").should == /cafe|caf%C3%A9/
     end
   end
 

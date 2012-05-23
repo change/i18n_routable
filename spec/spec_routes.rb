@@ -21,9 +21,8 @@ class SpecRoutes
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
         localize! :locales => [{:gibberish => :gibb}, :aussie, :es, :fr, :'fr-CA']
-        regexp = I18nRoutable.display_locales.join "|"
-        regexp = /#{regexp}/
-        scope "(:locale)", :locale => regexp do
+
+        localize do
 
           get :constraints => proc { false }, "*path" => "FooController#foo"
 
@@ -50,6 +49,7 @@ class SpecRoutes
 
           root :to => 'test#root'
         end
+
       end
     end
 

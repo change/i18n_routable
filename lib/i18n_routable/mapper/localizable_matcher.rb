@@ -5,12 +5,14 @@ module I18nRoutable
       def match_with_localize path, options={}
         options ||= {}
 
-        path, segments = I18nRoutable.convert_path_to_localized_regexp(path)
+        if I18nRoutable.localizing?
+          path, segments = I18nRoutable.convert_path_to_localized_regexp(path)
 
-        if segments.present?
-          options[:constraints] ||= {}
-          if options[:constraints].is_a? Hash
-            I18nRoutable.add_segment_constraints(options[:constraints], segments)
+          if segments.present?
+            options[:constraints] ||= {}
+            if options[:constraints].is_a? Hash
+              I18nRoutable.add_segment_constraints(options[:constraints], segments)
+            end
           end
         end
 

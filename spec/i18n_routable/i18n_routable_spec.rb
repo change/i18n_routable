@@ -17,13 +17,11 @@ describe I18nRoutable do
 
   context 'validating config options' do
     before do
-      @old_conversions_from_backend_to_display_locales = I18nRoutable.localize_config[:backend_to_display_locales]
-      @old_conversions_from_display_to_backend_locales = I18nRoutable.localize_config[:display_to_backend_locales]
+      @old_config = I18nRoutable.localize_config
     end
 
     after do
-      I18nRoutable.localize_config[:backend_to_display_locales] = @old_conversions_from_backend_to_display_locales
-      I18nRoutable.localize_config[:display_to_backend_locales] = @old_conversions_from_display_to_backend_locales
+      I18nRoutable.localize_config = @old_config
     end
 
     it 'should not support a symbol for :locales, it must take an array' do
