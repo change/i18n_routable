@@ -1,5 +1,6 @@
 require 'rails/all'
 require 'active_support/all'
+require 'rack/mount/strexp'
 
 require 'i18n_routable/version'
 require 'i18n_routable/config'

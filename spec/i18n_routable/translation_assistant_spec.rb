@@ -5,8 +5,9 @@ describe I18nRoutable::TranslationAssistant do
 
   context '#convert_path_to_localized_regexp' do
 
+
     def convert path
-      subject.send(:convert_path_to_localized_regexp, path)
+      subject.convert_path_to_localized_regexp path
     end
 
     it 'should not segment sections that have no translations' do
@@ -21,6 +22,11 @@ describe I18nRoutable::TranslationAssistant do
     it "should translate the components of a glob url" do
       convert("/about").should eql ["/:i18n_about", ["about"]]
       convert("/about(/*anything)").should eql ["/:i18n_about(/*anything)", ["about"]]
+    end
+
+    it 'should respect optional arguments within optional arguments' do
+      convert("posts/comments(/:users(/:individual))").should eql [":i18n_posts/:i18n_comments(/:users(/:individual))", ["posts", "comments"]]
+      convert("posts/comments(/users(/:users))").should eql [":i18n_posts/:i18n_comments(/:i18n_users(/:users))", ["posts", "comments", "users"]]
     end
 
     it 'should preserve order' do

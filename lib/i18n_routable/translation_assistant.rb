@@ -1,7 +1,8 @@
+
 module I18nRoutable
   module TranslationAssistant
 
-    def tokenized_segment(segment)
+    def tokenize_segment segment
       "i18n_#{segment}".gsub '-', '__'
     end
 
@@ -9,32 +10,44 @@ module I18nRoutable
       segment.gsub '__', '-'
     end
 
+    # /posts => ["/:i18n_posts", ["posts"]]
     def convert_path_to_localized_regexp path
-      return [path,[]] if path =~ %r{^/+$} # Root url
+      new_path, i18n_segment, segments = '', '', []
+      prefixes = Hash.new {|h,k| h[k] = ''}
+      prefixes.merge! :PARAM => ':', :GLOB => '*'
+      route_lexer = ::Rack::Mount::StrexpParser.new.tap {|s| s.scan_setup path }
+      route_separators = /[#{ActionDispatch::Routing::SEPARATORS.join ''}]/
+      begin
+        type, token = route_lexer.next_token
+        # puts "RES: %6s : %s" % [type, token]
 
-      new_path, segments = '', []
-
-      new_path << path.split(/(\(.+?\))/).map do |component|
-        if component.starts_with?("(") || component == '//'
-          component
-        else
-          component.split("/").map do |word|
-            if word.blank? || word.starts_with?(":") || word.starts_with?("*") || translated_segments(word) == [word]
-              word
-            else
-              segments << word
-              ':' + tokenized_segment(word)
-            end
-          end.join("/")
+        if type == :CHAR && token !~ route_separators
+          i18n_segment << token
+          next
         end
-      end.join
+
+        if i18n_segment.present?
+          # Only add it to be translated if there are translations
+          if translated_segments(i18n_segment) != [i18n_segment]
+            new_path << ":#{tokenize_segment i18n_segment}"
+            segments << i18n_segment
+          else
+            new_path << i18n_segment
+          end
+        end
+
+        i18n_segment = ''
+        new_path << prefixes[type] << token if token
+      end while type.present?
 
       [new_path, segments]
     end
 
+
+
     def add_segment_constraints constraints, segments
       segments.each do |segment|
-        constraint_token = tokenized_segment segment
+        constraint_token = tokenize_segment segment
         constraints[constraint_token.to_sym] ||= route_constraint_for_segment(segment)
       end
     end
