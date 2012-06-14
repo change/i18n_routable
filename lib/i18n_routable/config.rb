@@ -5,9 +5,7 @@ module I18nRoutable
     self.localize_config = {}
 
     def setup! options
-      self.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
-      self.localize_config[:locales] ||= default_locales
-
+      setup_localize_config! options
       validate_options!
       setup_convert_to_display_locale!
       setup_convert_to_backend_locale!
@@ -32,7 +30,7 @@ module I18nRoutable
     end
 
     def backend_locales
-      @@backend_locales ||= self.localize_config[:locales].map do |locale|
+      self.localize_config[:backend_locales] ||= self.localize_config[:locales].map do |locale|
         if locale.is_a? Hash
           locale.values.first.to_sym
         else
@@ -42,7 +40,7 @@ module I18nRoutable
     end
 
     def display_locales
-      @@display_locales ||= self.localize_config[:locales].map do |locale|
+      self.localize_config[:display_locales] ||= self.localize_config[:locales].map do |locale|
         if locale.is_a? Hash
           locale.keys.first.to_sym
         else
@@ -65,7 +63,7 @@ module I18nRoutable
 
     def build_route_translation_cache!
       route_translation_cache = self.backend_locales.each_with_object({}) do |locale, hsh|
-        I18n.t('routes', :locale => locale, :default => {}).each_pair do |route, translation|
+        route_translations_for_locale(locale).each_pair do |route, translation|
           route = route.to_s
           hsh[route] ||= Set[escape route]
           hsh[route] << escape(translation)
@@ -84,11 +82,17 @@ module I18nRoutable
     end
 
     def default_localize_options
-      {locale_prefix: true, :locales => nil}
+      {locale_prefix: true, locales: nil, translations: {}}
     end
 
     def default_locales
       I18n.available_locales - [I18n.default_locale]
+    end
+
+    def setup_localize_config! options
+      self.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
+      self.localize_config[:locales] ||= default_locales
+      self.localize_config[:translations].symbolize_keys!
     end
 
     def validate_options!
@@ -132,6 +136,14 @@ module I18nRoutable
         end
       end
       self.localize_config[:display_to_backend_locales].merge! I18n.default_locale => I18n.default_locale
+    end
+
+    def route_translations_for_locale locale
+      if localize_config[:translations].present?
+        localize_config[:translations].fetch(locale).symbolize_keys.fetch(:routes)
+      else
+        I18n.translate('routes', :locale => locale, :default => {})
+      end
     end
 
   end

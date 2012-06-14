@@ -85,6 +85,26 @@ describe I18nRoutable do
         resources :dogs
       end
     end
+
+    context 'passing translations' do
+
+      before {
+        @translations = YAML.load_file(SpecRoutes.routes_yml)
+        @locales = @translations.keys.map(&:to_sym)
+      }
+
+      it 'does not require loading of translations if a translations are specified' do
+        I18n.should_not_receive(:translate)
+        translations = @translations
+        locales = @locales
+        SpecRoutes.always_new_router.draw do
+          localize! translations: translations, locales: locales
+          localize do
+            resources :dogs
+          end
+        end
+      end
+    end
   end
 
   context "incoming routes" do

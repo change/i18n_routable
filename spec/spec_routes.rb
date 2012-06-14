@@ -1,10 +1,12 @@
-I18n.load_path = (I18n.load_path << Dir[File.join(File.dirname(__FILE__), 'locales', 'routes.yml')]).uniq
-
 class SpecRoutes
 
   cattr_accessor :router
 
   class << self
+
+    def routes_yml
+      Dir[File.join(File.dirname(__FILE__), 'locales', 'routes.yml')].first
+    end
 
     def go!
       draw!
@@ -63,5 +65,6 @@ class SpecRoutes
   end
 
 end
+I18n.load_path = (I18n.load_path << SpecRoutes.routes_yml).uniq
 
 SpecRoutes.go!
