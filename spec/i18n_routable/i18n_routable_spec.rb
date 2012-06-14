@@ -77,6 +77,14 @@ describe I18nRoutable do
         end
       end.should raise_error(ArgumentError)
     end
+
+    it 'does not require loading of translations if a locale is specified' do
+      I18n.should_not_receive(:available_locales)
+      SpecRoutes.always_new_router.draw do
+        localize! locales: [:es]
+        resources :dogs
+      end
+    end
   end
 
   context "incoming routes" do

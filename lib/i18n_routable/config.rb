@@ -6,6 +6,8 @@ module I18nRoutable
 
     def setup! options
       self.localize_config = options.symbolize_keys.reverse_merge(default_localize_options)
+      self.localize_config[:locales] ||= default_locales
+
       validate_options!
       setup_convert_to_display_locale!
       setup_convert_to_backend_locale!
@@ -82,10 +84,11 @@ module I18nRoutable
     end
 
     def default_localize_options
-      {
-        :locale_prefix => true,
-        :locales => I18n.available_locales - [I18n.default_locale]
-      }
+      {locale_prefix: true, :locales => nil}
+    end
+
+    def default_locales
+      I18n.available_locales - [I18n.default_locale]
     end
 
     def validate_options!
