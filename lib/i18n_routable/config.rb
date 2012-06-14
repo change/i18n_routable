@@ -139,11 +139,11 @@ module I18nRoutable
     end
 
     def route_translations_for_locale locale
-      if localize_config[:translations].present?
-        localize_config[:translations].fetch(locale).symbolize_keys.fetch(:routes)
-      else
-        I18n.translate('routes', :locale => locale, :default => {})
-      end
+      translations = localize_config[:translations]
+      return I18n.translate('routes', :locale => locale, :default => {}) unless translations.present?
+      translations_for_locale = translations[locale]
+      return {} if translations_for_locale.blank?
+      translations_for_locale.symbolize_keys.fetch(:routes)
     end
 
   end
