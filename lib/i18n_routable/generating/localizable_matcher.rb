@@ -1,5 +1,5 @@
 module I18nRoutable
-  module Mapper
+  module Generating
     module LocalizableMatcher
 
       def match_with_localize path, options={}

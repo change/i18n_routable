@@ -1,5 +1,0 @@
-require 'i18n_routable/mapper/localizable_scope'
-require 'i18n_routable/mapper/localizable_matcher'
-
-ActionDispatch::Routing::Mapper.send :include, I18nRoutable::Mapper::LocalizableScope
-ActionDispatch::Routing::Mapper::Base.send :include, I18nRoutable::Mapper::LocalizableMatcher

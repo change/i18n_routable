@@ -1,5 +1,5 @@
 module I18nRoutable
-  module RouteSet
+  module Util
     module ReverseRouteLookup
 
       # Returns the route name instead of the params

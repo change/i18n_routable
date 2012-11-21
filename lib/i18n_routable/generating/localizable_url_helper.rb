@@ -1,5 +1,5 @@
 module I18nRoutable
-  module RouteSet
+  module Generating
     module LocalizableUrlHelper
 
       # we override this, but it really only removes positional_keys that are
