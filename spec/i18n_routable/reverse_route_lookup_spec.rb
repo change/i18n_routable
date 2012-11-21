@@ -1,6 +1,6 @@
 # encoding: utf-8
 require 'spec_helper'
-describe I18nRoutable::RouteSet::ReverseRouteLookup do
+describe I18nRoutable::Util::ReverseRouteLookup do
 
   def base_named_route_for(options)
     SpecRoutes.router.base_named_route_for(options)

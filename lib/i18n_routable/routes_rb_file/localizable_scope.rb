@@ -1,5 +1,5 @@
 module I18nRoutable
-  module Mapper
+  module RoutesRbFile
     module LocalizableScope
 
       # Two ways of using:
