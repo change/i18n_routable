@@ -10,33 +10,27 @@ task :routes do
 
   all_routes = SpecRoutes.router.routes
 
+  require 'debugger'
+  # debugger;1
 
-  if ENV['CONTROLLER']
-    all_routes = all_routes.select{ |route| route.defaults[:controller] == ENV['CONTROLLER'] }
+  fake_rails = Class.new do
+    def config
+      self
+    end
+    def assets
+      self
+    end
+    def prefix
+      0
+    end
   end
 
-  routes = all_routes.collect do |route|
+  Rails.application = fake_rails.new
 
-    reqs = route.requirements.dup
-    reqs[:to] = route.app unless route.app.class.name.to_s =~ /^ActionDispatch::Routing/
-    reqs = reqs.empty? ? "" : reqs.inspect
+  require 'rails/application/route_inspector'
+  inspector = Rails::Application::RouteInspector.new
+  puts inspector.format(all_routes, ENV['CONTROLLER']).join "\n"
 
-    {:name => route.name.to_s, :verb => route.verb.to_s, :path => route.path, :reqs => reqs}
-  end
-
-  routes.reject! { |r| r[:path] =~ %r{/rails/info/properties} } # Skip the route if it's internal info route
-
-  name_width = routes.map{ |r| r[:name].length }.max
-  verb_width = routes.map{ |r| r[:verb].length }.max
-  path_width = routes.map{ |r| r[:path].length }.max
-  reqs_with  = routes.map{ |r| r[:reqs].length }.max
-
-  puts "#{"NAME".center(name_width)} #{"VERB".center(verb_width)} #{"PATH".center(path_width)} #{"REQUIREMENTS".center(reqs_with)}"
-
-
-  routes.each do |r|
-    puts "#{r[:name].rjust(name_width)} #{r[:verb].ljust(verb_width)} #{r[:path].ljust(path_width)} #{r[:reqs]}"
-  end
 end
 
 task :default => :test

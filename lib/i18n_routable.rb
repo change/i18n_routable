@@ -1,6 +1,6 @@
 require 'rails/all'
 require 'active_support/all'
-require 'rack/mount/strexp'
+require 'journey'
 
 require 'i18n_routable/version'
 require 'i18n_routable/config'
@@ -11,8 +11,8 @@ require 'i18n_routable/routes_rb_file/localizable_scope'
 ActionDispatch::Routing::Mapper.send :include, I18nRoutable::RoutesRbFile::LocalizableScope
 
 
-require 'i18n_routable/generating/localizable_matcher'
-ActionDispatch::Routing::Mapper::Base.send :include, I18nRoutable::Generating::LocalizableMatcher
+require 'i18n_routable/generating/original_route_to_i18n_route'
+ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Generating::OriginalRouteToI18nRoute
 
 require 'i18n_routable/generating/localizable_url_helper'
 ActionDispatch::Routing::RouteSet::NamedRouteCollection.send :include, I18nRoutable::Generating::LocalizableUrlHelper
@@ -23,4 +23,4 @@ ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Util::ReverseRout
 
 
 require 'i18n_routable/outgoing/localizable_route'
-Rack::Mount::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute
+# Rack::Mount::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute

@@ -78,7 +78,7 @@ module I18nRoutable
     end
 
     def escape route_translation
-      Regexp.escape CGI.escape route_translation
+      Regexp.escape Journey::Router::Utils.escape_fragment route_translation
     end
 
     def default_localize_options
