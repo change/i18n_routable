@@ -180,4 +180,17 @@ describe I18nRoutable do
 
   end
 
+  context 'url_for' do
+
+    it 'should recognize non named routes' do
+      I18n.locale = 'es'
+
+      route_hash = hash_for_post_url(:id => 1)
+      route_hash = route_hash.slice!(:use_route)
+      route_hash.should eql :id => 1, :action => "show", :controller => "posts", :only_path => false
+      url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
+
+    end
+  end
+
 end
