@@ -1,7 +1,7 @@
 # outoing route helper that injects i18n_ paramsto generate the route
 module I18nRoutable
   module Outgoing
-    module LocalizableRoute
+    module LocalizableFormatter
 
       def generate_with_localize key, name, options, recall = {}, parameterize = nil
         constraints = recall.merge options
