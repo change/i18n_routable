@@ -9,12 +9,12 @@ module I18nRoutable
       # essientially copied from Rails.app.recognize_path
       def base_named_route_for path, environment = {}
         method = (environment[:method] || "GET").to_s.upcase
-        path = ::Rack::Mount::Utils.normalize_path(path) unless path =~ %r{://}
+        path = Journey::Router::Utils.normalize_path(path) unless path =~ %r{://}
 
         env = ::Rack::MockRequest.env_for(path, {:method => method})
 
         req = @request_class.new(env)
-        @set.recognize(req) do |route, matches, params|
+        @router.recognize(req) do |route, matches, params|
           return route.name if route.name
         end
         nil
