@@ -5,6 +5,7 @@ module I18nRoutable
 
       def generate_with_localize key, name, options, recall = {}, parameterize = nil
         constraints = recall.merge options
+        locale = add_locale_param(constraints) #added this line
 
         match_route(name, constraints) do |route|
           data = constraints.dup
@@ -19,9 +20,12 @@ module I18nRoutable
 
           parameterized_parts = data.dup
 
-          # I added these two lines, that's it
+          # Added these lines
           reject_unnecessary_i18n_params!(options, route.required_parts)
-          add_locale_stuff(parameterized_parts, route.required_parts)
+          inject_i18n_translations(parameterized_parts, route.required_parts)
+          modify_locale(parameterized_parts, locale)
+          options.delete(:locale)
+
 
           if parameterize
             parameterized_parts.each do |k,v|
@@ -49,22 +53,23 @@ module I18nRoutable
         end
       end
 
-
-
-      def add_locale_stuff(params, required_params)
+      def add_locale_param(constraints)
         # set the locale to the params or current
-        params[:locale] ||= I18nRoutable.convert_to_backend_locale(params[:locale]) || I18n.locale
+        constraints[:locale] ||= I18nRoutable.convert_to_backend_locale(constraints[:locale]) || I18n.locale
         # reject the locale unless we support that locale
-        params[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(params[:locale].to_sym)
+        constraints[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(constraints[:locale].to_sym)
+        constraints[:locale]
+      end
 
-        inject_i18n_translations(params, required_params)
 
+
+      def modify_locale(params, locale)
         # delete the locale if it's the default (no locale in scope)
-        if params[:locale].to_s == I18n.default_locale.to_s
+        if locale.to_s == I18n.default_locale.to_s
           params.delete :locale
         else
           # reset the locale to the display version
-          params[:locale] = I18nRoutable.convert_to_display_locale(params[:locale])
+          params[:locale] = I18nRoutable.convert_to_display_locale(locale)
         end
       end
 
