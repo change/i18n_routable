@@ -23,4 +23,4 @@ ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Util::ReverseRout
 
 
 require 'i18n_routable/outgoing/localizable_route'
-# Rack::Mount::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute
+Journey::Formatter.send :include, I18nRoutable::Outgoing::LocalizableRoute

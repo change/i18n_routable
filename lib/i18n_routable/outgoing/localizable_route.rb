@@ -3,6 +3,45 @@ module I18nRoutable
   module Outgoing
     module LocalizableRoute
 
+      def generate_with_localize key, name, options, recall = {}, parameterize = nil
+        constraints = recall.merge options
+
+        match_route(name, constraints) do |route|
+          data = constraints.dup
+
+          keys_to_keep = route.parts.reverse.drop_while { |part|
+            !options.key?(part) || (options[part] || recall[part]).nil?
+            } | route.required_parts
+
+          (data.keys - keys_to_keep).each do |bad_key|
+            data.delete bad_key
+          end
+
+          parameterized_parts = data.dup
+
+          # I added these two lines, that's it
+          reject_unnecessary_i18n_params!(options, route.required_parts)
+          add_locale_stuff(parameterized_parts, route.required_parts)
+
+          if parameterize
+            parameterized_parts.each do |k,v|
+              parameterized_parts[k] = parameterize.call(k, v)
+            end
+          end
+
+          parameterized_parts.keep_if { |_,v| v  }
+
+          next if !name && route.requirements.empty? && route.parts.empty?
+
+          next unless verify_required_parts!(route, parameterized_parts)
+
+          z = Hash[options.to_a - data.to_a - route.defaults.to_a]
+
+          return [route.format(parameterized_parts), z]
+        end
+
+        raise Journey::Router::RoutingError
+      end
 
       def reject_unnecessary_i18n_params!(params, required_params)
         params.reject! do |(param_name, value)|
@@ -10,11 +49,29 @@ module I18nRoutable
         end
       end
 
-      # this method injects translations into the params based on required_params
+
+
+      def add_locale_stuff(params, required_params)
+        # set the locale to the params or current
+        params[:locale] ||= I18nRoutable.convert_to_backend_locale(params[:locale]) || I18n.locale
+        # reject the locale unless we support that locale
+        params[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(params[:locale].to_sym)
+
+        inject_i18n_translations(params, required_params)
+
+        # delete the locale if it's the default (no locale in scope)
+        if params[:locale].to_s == I18n.default_locale.to_s
+          params.delete :locale
+        else
+          # reset the locale to the display version
+          params[:locale] = I18nRoutable.convert_to_display_locale(params[:locale])
+        end
+      end
+
+      # this method injects translations into the params
       # that start with i18n_
       # :i18n_posts => 'puestos'
-      def inject_i18n_translations(params)
-        required_params = @conditions[:path_info].required_params
+      def inject_i18n_translations(params, required_params)
         reject_unnecessary_i18n_params!(params, required_params)
         required_params_to_check = required_params - params.keys
         return unless required_params_to_check
@@ -24,32 +81,8 @@ module I18nRoutable
             params[required_param] ||= I18nRoutable.translate_segment($1, params[:locale])
           end
         end
-
       end
 
-      def generate_with_localize(method, params = {}, recall = {}, options = {})
-        # set the locale to the params or current
-        params[:locale] ||= I18nRoutable.convert_to_backend_locale(params[:locale]) || I18n.locale
-        # reject the locale unless we support that locale
-        params[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(params[:locale].to_sym)
-
-        required_defaults = @conditions[:path_info].required_defaults
-
-        merged = recall.merge(params)
-        should_inject_translations = required_defaults.present? && required_defaults.all? { |k, v| merged[k] == v }
-        inject_i18n_translations(params) if should_inject_translations
-
-        # delete the locale if it's the default (no locale in scope)
-        if params[:locale].to_s == I18n.default_locale.to_s
-          params.delete :locale
-        else
-          # reset the locale to the display version
-          params[:locale] = I18nRoutable.convert_to_display_locale(params[:locale])
-        end
-
-        # call super
-        generate_without_localize(method, params, recall, options)
-      end
 
       def self.included base
         base.send :alias_method_chain, :generate, :localize
