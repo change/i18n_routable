@@ -2,5 +2,6 @@ language: ruby
 branches:
   only:
     - master
+    - rails_3_2
 rvm:
   - 1.9.3
