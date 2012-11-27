@@ -19,65 +19,54 @@ describe I18nRoutable::TranslationAssistant do
     end
 
     it 'should not segment sections that have no translations' do
-      convert('/blogs').should eql ["/blogs", []]
-      convert('/blogs/new').should eql ["/blogs/:i18n_new", ['new']]
+      convert('/blogs').should eql ["/blogs", {}]
+      convert('/blogs/new').should eql ["/blogs/:i18n_new", {i18n_new: /new|the\-new|neuvo|nouvelles/}]
     end
 
     it "should translate the components of a normal url" do
-      convert("/posts").should eql ["/:i18n_posts", ["posts"]]
+      convert("/posts").should eql ["/:i18n_posts", {i18n_posts: /posts|puestos|messages/}]
     end
 
     it "should translate the components of a glob url" do
-      convert("/about").should eql ["/:i18n_about", ["about"]]
-      convert("/about(/*anything)").should eql ["/:i18n_about(/*anything)", ["about"]]
+      convert("/about").should eql ["/:i18n_about", {i18n_about: /about|sobre/}]
+      convert("/about(/*anything)").should eql ["/:i18n_about(/*anything)", {i18n_about: /about|sobre/}]
     end
 
     it 'should respect optional arguments within optional arguments' do
-      convert("posts/comments(/:users(/:individual))").should eql [":i18n_posts/:i18n_comments(/:users(/:individual))", ["posts", "comments"]]
-      convert("posts/comments(/users(/:users))").should eql [":i18n_posts/:i18n_comments(/:i18n_users(/:users))", ["posts", "comments", "users"]]
+      convert("posts/comments(/:users(/:individual))").should eql [":i18n_posts/:i18n_comments(/:users(/:individual))",
+        {i18n_posts: /posts|puestos|messages/, i18n_comments: /comments|commentaires/}]
+      convert("posts/comments(/users(/:users))").should eql [":i18n_posts/:i18n_comments(/:i18n_users(/:users))",
+        {i18n_posts: /posts|puestos|messages/,
+         i18n_comments: /comments|commentaires/,
+         i18n_users: /users|usuarios|utilisateurs|canada_utilisateurs/}]
     end
 
     it 'should preserve order' do
-      convert("/posts/new").should eql ["/:i18n_posts/:i18n_new", ["posts", "new"]]
+      convert("/posts/new").should eql ["/:i18n_posts/:i18n_new",
+        {i18n_posts: /posts|puestos|messages/, i18n_new: /new|the\-new|neuvo|nouvelles/}]
     end
 
     it "should ignore param names" do
-      convert("/posts/:posts").should eql ["/:i18n_posts/:posts", ["posts"]]
-      convert("/posts(/:id)(.:format)").should eql ["/:i18n_posts(/:id)(.:format)", ["posts"]]
-      convert(':alias/events/:old_action').should eql [":alias/:i18n_events/:old_action", ["events"]]
+      convert("/posts/:posts").should eql ["/:i18n_posts/:posts",
+       {i18n_posts: /posts|puestos|messages/}]
+      convert("/posts(/:id)(.:format)").should eql ["/:i18n_posts(/:id)(.:format)",
+        {i18n_posts: /posts|puestos|messages/}]
+      convert(':alias/events/:old_action').should eql [":alias/:i18n_events/:old_action",
+        {i18n_events: /events|eventos|evenements/}]
     end
 
     it 'should double underscore dashes' do
-      convert('all-the-posts(/:action(/:id))').should eql [":i18n_all__the__posts(/:action(/:id))", ["all-the-posts"]]
+      convert('all-the-posts(/:action(/:id))').should eql [":i18n_all__the__posts(/:action(/:id))",
+        {i18n_all__the__posts: /all\-the\-posts|todos\-los\-puestos/}]
     end
 
     it "should only translate segments" do
-      convert("/posts/more-posts").should eql ["/:i18n_posts/more-posts", ["posts"]]
-      convert("/more-posts/posts").should eql ["/more-posts/:i18n_posts", ["posts"]]
+      convert("/posts/more-posts").should eql ["/:i18n_posts/more-posts",
+        {i18n_posts: /posts|puestos|messages/}]
+      convert("/more-posts/posts").should eql ["/more-posts/:i18n_posts",
+        {i18n_posts: /posts|puestos|messages/}]
     end
   end
 
-  context '#route_constraint_for_segment' do
-
-    def convert segment
-      subject.send :route_constraint_for_segment, segment
-    end
-
-    before do
-      I18n.stub(:available_locales).and_return %w{fr de nl au}
-    end
-
-    it 'should translate in the locales passed in to I18nRoutable' do
-      convert("posts").should == /posts|puestos|messages/
-    end
-
-    it 'should regexp escape' do
-      convert("all-the-posts").should == /all\-the\-posts|todos\-los\-puestos/
-    end
-
-    it 'should cgi escape' do
-      convert("cafe").should == /cafe|caf%C3%A9/
-    end
-  end
 
 end

@@ -4,6 +4,7 @@ require 'journey'
 
 require 'i18n_routable/version'
 require 'i18n_routable/config'
+require 'i18n_routable/route_translation_visitor'
 require 'i18n_routable/translation_assistant'
 
 
