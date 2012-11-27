@@ -23,5 +23,8 @@ require 'i18n_routable/util/reverse_route_lookup'
 ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Util::ReverseRouteLookup
 
 
+require 'i18n_routable/outgoing/localizable_route'
+Journey::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute
+
 require 'i18n_routable/outgoing/localizable_formatter'
 Journey::Formatter.send :include, I18nRoutable::Outgoing::LocalizableFormatter
