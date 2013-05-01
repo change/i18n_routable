@@ -55,9 +55,9 @@ module I18nRoutable
 
       def add_locale_param(constraints)
         # set the locale to the params or current
-        constraints[:locale] ||= I18nRoutable.convert_to_backend_locale(constraints[:locale]) || I18n.locale
+        locale = I18nRoutable.convert_to_backend_locale(constraints[:locale]) || I18n.locale
         # reject the locale unless we support that locale
-        constraints[:locale] = I18n.default_locale unless I18nRoutable.backend_locales.include?(constraints[:locale].to_sym)
+        constraints[:locale] = I18nRoutable.backend_locales.include?(locale) ? locale : I18n.default_locale
         constraints[:locale]
       end
 
