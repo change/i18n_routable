@@ -151,6 +151,10 @@ describe I18nRoutable do
       new_post_url(:locale => :gibb).should eql "http://www.example.com/gibberish/posts/the-new"
     end
 
+    it 'should accept display locales to the url' do
+      new_post_url(:locale => 'gibberish').should eql "http://www.example.com/gibberish/posts/the-new"
+    end
+
   end
 
   context 'hash_for helpers' do
