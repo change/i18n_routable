@@ -49,7 +49,7 @@ module I18nRoutable
 
       def reject_unnecessary_i18n_params!(params, required_params)
         params.reject! do |(param_name, value)|
-          param_name.to_s.starts_with?('i18n_') && !required_params.include?(param_name)
+          param_name.to_s.starts_with?('i18n_')
         end
       end
 
@@ -78,7 +78,7 @@ module I18nRoutable
       # :i18n_posts => 'puestos'
       def inject_i18n_translations(params, required_params)
         reject_unnecessary_i18n_params!(params, required_params)
-        required_params_to_check = required_params - params.keys
+        required_params_to_check = required_params
         return unless required_params_to_check
 
         required_params_to_check.each do |required_param|

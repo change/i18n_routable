@@ -6,6 +6,11 @@ class TestController < ActionController::Base
     render :text => posts_path(:locale => :es)
   end
 
+  def index
+    params[:i18n_posts] = nil
+    render :text => url_for(params.merge(locale: :es, only_path: true))
+  end
+
   def use_url_for_with_implicit_params
 
     # url_for should infer the controller from the current controller
@@ -25,6 +30,17 @@ describe TestController do
 
     # issue a request to the route for French locale
     env = Rack::MockRequest.env_for('/fr/test')
+
+    # make sure response is good
+    response_code, _, response = SpecRoutes.router.call(env)
+    response.body.should eql '/es/puestos'
+    response_code.to_i.should == 200
+  end
+
+  it 'should allow users to reject i18n_ params' do
+
+    # issue a request to the route for French locale
+    env = Rack::MockRequest.env_for('/fr/messages')
 
     # make sure response is good
     response_code, _, response = SpecRoutes.router.call(env)

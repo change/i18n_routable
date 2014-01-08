@@ -1,4 +1,5 @@
 class TestController < ActionController::Base; end
+class CafeController < ActionController::Base; end
 class TestApplication < Rails::Application; end
 
 RSpec.configure do |config|

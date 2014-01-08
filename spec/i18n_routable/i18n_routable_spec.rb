@@ -61,7 +61,6 @@ describe I18nRoutable do
 
     it 'should resolve incoming escaped routes' do
       resolve('/es/caf%C3%A9').should eql :action=>"drink", :controller=>"cafe", :locale=>"es", :i18n_cafe=>"caf\xC3\xA9"
-
     end
   end
 
@@ -79,6 +78,10 @@ describe I18nRoutable do
     it 'should reject unnecessary :i18n_* params' do
       I18n.locale = :es
       new_post_path(:i18n_edit => 'editar').should eql '/es/puestos/neuvo'
+    end
+
+    it 'should reject any i18n_' do
+      posts_path(locale: :fr, :i18n_posts => 'puestos').should eql '/fr/messages'
     end
 
     it 'should work without passing parameters in a hash' do
@@ -149,6 +152,10 @@ describe I18nRoutable do
       new_post_url.should eql "http://www.example.com/gibberish/posts/the-new"
       I18n.locale = :en
       new_post_url(:locale => :gibb).should eql "http://www.example.com/gibberish/posts/the-new"
+    end
+
+    it 'should accept display locales to the url' do
+      new_post_url(:locale => 'gibberish').should eql "http://www.example.com/gibberish/posts/the-new"
     end
 
   end
