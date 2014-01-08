@@ -71,7 +71,7 @@ module I18nRoutable
       end
 
       route_translation_cache.keys.each do |route|
-        route_translation_cache[route] = /#{ route_translation_cache[route].to_a * '|' }/
+        route_translation_cache[route] = /#{ route_translation_cache[route].to_a * '|' }/i
       end
 
       self.route_translation_cache = route_translation_cache
