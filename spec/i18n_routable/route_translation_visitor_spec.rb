@@ -37,7 +37,7 @@ describe RouteTranslationVisitor do
 
     it 'should add items to route_translations' do
       localify_node(node).should == ":i18n_posts"
-      subject.route_translations.should == {i18n_posts: /posts|puestos|messages/}
+      subject.route_translations.should == {i18n_posts: /posts|puestos|messages/i}
     end
 
   end
@@ -54,15 +54,15 @@ describe RouteTranslationVisitor do
     end
 
     it 'should translate in the locales passed in to I18nRoutable' do
-      convert("posts").should == /posts|puestos|messages/
+      convert("posts").should == /posts|puestos|messages/i
     end
 
     it 'should regexp escape' do
-      convert("all-the-posts").should == /all\-the\-posts|todos\-los\-puestos/
+      convert("all-the-posts").should == /all\-the\-posts|todos\-los\-puestos/i
     end
 
     it 'should cgi escape' do
-      convert("cafe").should == /cafe|caf%C3%A9/
+      convert("cafe").should == /cafe|caf%C3%A9/i
     end
   end
 
