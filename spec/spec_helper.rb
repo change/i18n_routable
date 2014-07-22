@@ -1,6 +1,7 @@
 require "rubygems"
 require "bundler/setup"
-require 'ruby-debug'
+# Add to Gemfile and uncomment as needed.
+# require 'ruby-debug'
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'i18n_routable'
