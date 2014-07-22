@@ -15,7 +15,7 @@ module I18nRoutable
           def #{selector}(*args)
             options =  #{hash_access_method}(args.extract_options!)
 
-            if args.any?
+            unless args.empty?
               options[:_positional_args] = args
               options[:_positional_keys] = #{positional_segments.inspect}
             end
