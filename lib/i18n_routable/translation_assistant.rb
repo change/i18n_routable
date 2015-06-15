@@ -15,16 +15,18 @@ module I18nRoutable
 
     # /posts => ["/:i18n_posts", ["posts"]]
     def convert_path_to_localized_regexp path, requirements={}, anchor= true
-      spec = Journey::Parser.new.parse(path)
+      parser = ActionDispatch::Journey::Parser.new
+      spec = parser.parse(path)
       visitor = RouteTranslationVisitor.new
       new_path = visitor.accept(spec)
+      new_path_spec = parser.parse(new_path)
       new_requirements = requirements.merge(visitor.route_translations)
-      [new_path, new_requirements]
+      [new_path, new_path_spec, new_requirements]
     end
 
     def translate_segment segment, locale
       segment = untokenize_segment segment
-      CGI.escape I18n.t segment, default: segment, scope: 'routes', locale: locale
+      I18n.t segment, default: segment, scope: 'routes', locale: locale
     end
 
   end

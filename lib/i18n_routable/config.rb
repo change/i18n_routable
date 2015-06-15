@@ -5,6 +5,7 @@ module I18nRoutable
     self.localize_config = {}
 
     def setup! options
+      I18n.config.enforce_available_locales = false
       setup_localize_config! options
       validate_options!
       setup_convert_to_display_locale!
@@ -78,7 +79,7 @@ module I18nRoutable
     end
 
     def escape route_translation
-      Regexp.escape Journey::Router::Utils.escape_fragment route_translation
+      Regexp.escape ActionDispatch::Journey::Router::Utils.escape_fragment route_translation
     end
 
     def default_localize_options

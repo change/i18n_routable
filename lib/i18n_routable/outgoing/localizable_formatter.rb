@@ -3,7 +3,7 @@ module I18nRoutable
   module Outgoing
     module LocalizableFormatter
 
-      def generate_with_localize key, name, options, recall = {}, parameterize = nil
+      def generate_with_localize name, options, recall = {}, parameterize = nil
         constraints = recall.merge options
         locale = add_locale_param(constraints) #added this line
 
@@ -13,7 +13,6 @@ module I18nRoutable
           keys_to_keep = route.parts.reverse.drop_while { |part|
             !options.key?(part) || (options[part] || recall[part]).nil?
             } | route.required_parts
-
           (data.keys - keys_to_keep).each do |bad_key|
             data.delete bad_key
           end
@@ -26,7 +25,6 @@ module I18nRoutable
           modify_locale(parameterized_parts, locale)
           options.delete(:locale)
 
-
           if parameterize
             parameterized_parts.each do |k,v|
               parameterized_parts[k] = parameterize.call(k, v)
@@ -37,14 +35,14 @@ module I18nRoutable
 
           next if !name && route.requirements.empty? && route.parts.empty?
 
-          next unless verify_required_parts!(route, parameterized_parts)
+          next unless missing_keys(route, parameterized_parts)
 
           z = Hash[options.to_a - data.to_a - route.defaults.to_a]
 
           return [route.format(parameterized_parts), z]
         end
 
-        raise Journey::Router::RoutingError
+        raise ActionDispatch::Journey::Router::RoutingError
       end
 
       def reject_unnecessary_i18n_params!(params, required_params)

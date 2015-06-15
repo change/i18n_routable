@@ -9,7 +9,7 @@ module I18nRoutable
       # essientially copied from Rails.app.recognize_path
       def base_named_route_for path, environment = {}
         method = (environment[:method] || "GET").to_s.upcase
-        path = Journey::Router::Utils.normalize_path(path) unless path =~ %r{://}
+        path = ActionDispatch::Journey::Router::Utils.normalize_path(path) unless path =~ %r{://}
 
         env = ::Rack::MockRequest.env_for(path, {:method => method})
 

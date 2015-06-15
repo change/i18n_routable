@@ -26,7 +26,7 @@ class SpecRoutes
 
         localize do
 
-          get :constraints => proc { false }, "*path" => "FooController#foo"
+          get :constraints => proc { false }, "*path" => "foocontroller#foo"
 
           resources :blogs
 
@@ -41,9 +41,9 @@ class SpecRoutes
 
           get 'all-the-posts' => 'posts#index', :as => :all_posts, :defaults => {:display => 'all'}
 
-          match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }
+          match "/bypass_action_controller", :to => proc {|env| [200, {}, ["Hello world"]] }, via: [:get, :post]
 
-          match 'about(/*anything)' => 'cms#show', :as => :about
+          match 'about(/*anything)' => 'cms#show', :as => :about, via: [:get, :post]
 
           # TestController
           get 'test' => "test#foo", :as => :test
@@ -66,5 +66,8 @@ class SpecRoutes
 
 end
 I18n.load_path = (I18n.load_path << SpecRoutes.routes_yml).uniq
+
+# Need to reload translations since we just set the load_path to look at routes.yml
+I18n.backend.send(:init_translations)
 
 SpecRoutes.go!
