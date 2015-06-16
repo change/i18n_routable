@@ -31,7 +31,6 @@ describe I18nRoutable::TranslationAssistant do
       conversion[2].should eql expected_results[2]
     end
 
-
     it 'should not segment sections that have no translations' do
       converted_result_equals '/blogs', ["/blogs", parser.parse("/blogs"), {}]
       converted_result_equals '/blogs/new', ["/blogs/:i18n_new", parser.parse("/blogs/:i18n_new"), {i18n_new: /new|the\-new|neuvo|nouvelles/i}]
@@ -90,6 +89,4 @@ describe I18nRoutable::TranslationAssistant do
         {i18n_posts: /posts|puestos|messages/i}]
     end
   end
-
-
 end

@@ -13,6 +13,7 @@ module I18nRoutable
           keys_to_keep = route.parts.reverse.drop_while { |part|
             !options.key?(part) || (options[part] || recall[part]).nil?
             } | route.required_parts
+
           (data.keys - keys_to_keep).each do |bad_key|
             data.delete bad_key
           end
