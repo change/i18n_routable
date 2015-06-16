@@ -85,7 +85,6 @@ describe I18nRoutable do
     end
 
     # it 'should work without passing parameters in a hash' do
-    #   require 'debugger'; debugger
     #   post_path("post-title").should eql "/posts/post-title"
     # end
 
@@ -176,7 +175,6 @@ describe I18nRoutable do
   #
   #   it 'should respect I18n.locale' do
   #     route_hash = hash_for_post_url(:id => 1)
-  #     route_hash = Rails.app.routes.recognize_path(path)
   #     route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
   #     url_for(route_hash).should eql "http://www.example.com/posts/1"
   #
@@ -189,18 +187,17 @@ describe I18nRoutable do
   #
   # end
 
-  context 'url_for' do
-
-    it 'should recognize non named routes' do
-      I18n.locale = 'es'
-
-      # route_hash = hash_for_post_url(:id => 1)
-      # route_hash = route_hash.slice!(:use_route)
-      # route_hash.should eql :id => 1, :action => "show", :controller => "posts", :only_path => false
-      route_hash = { :id => 1, :action => "show", :controller => "posts", :only_path => false }
-      url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
-
-    end
-  end
+  # context 'url_for' do
+  #
+  #   it 'should recognize non named routes' do
+  #     I18n.locale = 'es'
+  #
+  #     route_hash = hash_for_post_url(:id => 1)
+  #     route_hash = route_hash.slice!(:use_route)
+  #     route_hash.should eql :id => 1, :action => "show", :controller => "posts", :only_path => false
+  #     url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
+  #
+  #   end
+  # end
 
 end
