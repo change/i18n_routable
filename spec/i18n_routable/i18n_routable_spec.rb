@@ -84,6 +84,10 @@ describe I18nRoutable do
       posts_path(locale: :fr, :i18n_posts => 'puestos').should eql '/fr/messages'
     end
 
+    it 'should append any other params' do
+      posts_path(locale: :fr, :i18n_posts => 'puestos', :foo => 'bar').should eql '/fr/messages?foo=bar'
+    end
+
     # it 'should work without passing parameters in a hash' do
     #   post_path("post-title").should eql "/posts/post-title"
     # end
