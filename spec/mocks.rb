@@ -1,6 +1,12 @@
 class TestController < ActionController::Base; end
 class CafeController < ActionController::Base; end
-class TestApplication < Rails::Application; end
+class TestApplication < Rails::Application
+  # this is for sessions, which are disabled for this app
+  config.secret_key_base = 'aaa'
+
+  # disable sessions
+  config.session_store :disabled
+end
 
 RSpec.configure do |config|
 
