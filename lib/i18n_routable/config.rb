@@ -5,9 +5,9 @@ module I18nRoutable
     self.localize_config = {}
 
     def setup! options
-      I18n.config.enforce_available_locales = false
       setup_localize_config! options
       validate_options!
+      I18n.available_locales = self.localize_config[:locales]
       setup_convert_to_display_locale!
       setup_convert_to_backend_locale!
     end

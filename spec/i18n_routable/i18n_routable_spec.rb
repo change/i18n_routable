@@ -36,8 +36,8 @@ describe I18nRoutable do
     end
 
     it "should keep the default value for untranslated route segments" do
-      resolve("/gibberish/posts/").should eql :action=>"index", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts"
-      resolve("/gibberish/posts/the-new").should eql :action=>"new", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts", :i18n_new=>"the-new"
+      resolve("/gibb/posts/").should eql :action=>"index", :controller=>"posts", :locale=>"gibb", :i18n_posts=>"posts"
+      resolve("/gibb/posts/the-new").should eql :action=>"new", :controller=>"posts", :locale=>"gibb", :i18n_posts=>"posts", :i18n_new=>"the-new"
     end
 
     it 'should recognize un-resourcful urls' do
@@ -94,7 +94,7 @@ describe I18nRoutable do
 
     it 'should keep the english if the translation is missing' do
       lambda { I18n.translate(:posts, :locale => 'gibb', :raise => true) }.should raise_error(I18n::MissingTranslationData)
-      new_post_path(:locale => :gibb).should == "/gibberish/posts/the-new"
+      new_post_path(:locale => :gibb).should == "/gibb/posts/the-new"
     end
 
     it 'should work for both _path and _url' do
@@ -153,13 +153,13 @@ describe I18nRoutable do
 
     it 'should understand the difference between display locales and backend locales' do
       I18n.locale = :gibb
-      new_post_url.should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url.should eql "http://www.example.com/gibb/posts/the-new"
       I18n.locale = :en
-      new_post_url(:locale => :gibb).should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url(:locale => :gibb).should eql "http://www.example.com/gibb/posts/the-new"
     end
 
     it 'should accept display locales to the url' do
-      new_post_url(:locale => 'gibberish').should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url(:locale => 'gibb').should eql "http://www.example.com/gibb/posts/the-new"
     end
 
   end

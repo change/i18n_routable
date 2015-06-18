@@ -1,6 +1,9 @@
 class SpecRoutes
 
   cattr_accessor :router
+  cattr_accessor :supported_locales do
+    [:en, :gibb, :aussie, :es, :fr, :'fr-CA']
+  end
 
   class << self
 
@@ -22,7 +25,7 @@ class SpecRoutes
     def draw!
       self.router = ActionDispatch::Routing::RouteSet.new
       self.router.draw do
-        localize! :locales => [{:gibberish => :gibb}, :aussie, :es, :fr, :'fr-CA']
+        localize! :locales => SpecRoutes.supported_locales
 
         localize do
 

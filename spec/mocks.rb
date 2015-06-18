@@ -5,6 +5,7 @@ class TestApplication < Rails::Application; end
 RSpec.configure do |config|
 
   config.before do
+    I18n.available_locales = SpecRoutes.supported_locales
     I18n.locale = I18n.default_locale
     allow_message_expectations_on_nil
     ActionDispatch::Routing::RouteSet::Dispatcher.any_instance.stub(:controller_reference).and_return(TestController)
