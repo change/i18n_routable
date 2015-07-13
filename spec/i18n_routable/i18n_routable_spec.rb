@@ -26,6 +26,10 @@ describe I18nRoutable do
       resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA", :i18n_test=>"canada_test"
     end
 
+    it 'should route en-US path properly' do
+      resolve("/en-US/canada_test").should eql :action => "foo", :controller => "test", :locale => "en-US", :i18n_test=>"canada_test"
+    end
+
     it 'should resolve custom actions' do
       resolve("/es/puestos/1/unirse", :post).should eql :action=>"join", :controller=>"posts", :locale=>"es", :i18n_posts=>"puestos", :id=>"1", :i18n_join=>"unirse"
     end
@@ -125,6 +129,10 @@ describe I18nRoutable do
       # Thread.current[:WTF] = true
       posts_path(:locale => :'fr-CA').should eql "/fr-CA/messages"
       posts_path(:locale => I18n.default_locale).should eql posts_path
+    end
+
+    it "should accept 'en-US' :locale param as an option" do
+      posts_path(:locale => :'en-US').should eql "/en-US/posts"
     end
 
     it 'should override I18n.locale if :locale is passed in' do
