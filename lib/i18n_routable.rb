@@ -14,9 +14,6 @@ ActionDispatch::Routing::Mapper.send :include, I18nRoutable::RoutesRbFile::Local
 require 'i18n_routable/generating/original_route_to_i18n_route'
 ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Generating::OriginalRouteToI18nRoute
 
-require 'i18n_routable/generating/localizable_url_helper'
-ActionDispatch::Routing::RouteSet::NamedRouteCollection.send :include, I18nRoutable::Generating::LocalizableUrlHelper
-
 
 require 'i18n_routable/util/reverse_route_lookup'
 ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Util::ReverseRouteLookup
