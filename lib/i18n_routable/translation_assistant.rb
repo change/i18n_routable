@@ -13,7 +13,7 @@ module I18nRoutable
       segment.gsub '__', '-'
     end
 
-    # /posts => ["/:i18n_posts", ["posts"]]
+    # /posts => ["/:i18n_posts", /:i18n_posts, ["posts"]]
     def convert_path_to_localized_regexp path, requirements={}, anchor= true
       parser = ActionDispatch::Journey::Parser.new
       spec = parser.parse(path)
