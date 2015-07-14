@@ -2,8 +2,15 @@
 
 [![Build Status](https://secure.travis-ci.org/change/i18n_routable.png?branch=master)](http://travis-ci.org/change/i18n_routable)
 
-
 This is used to make your routes internationalized! It's a whole lot of code for only 1 public method!
+
+## Compatibility ##
+
+:exclamation: This gem is only compatible with Rails versions >= 4.2.
+
+## Changes Since Rails 3.x ##
+
+I18nRoutable::TranslationAssistant#convert_path_to_localized_regexp now returns an array of three items instead of two. It returns the path as a string, the parsed path represented by a Journey node, and the requirements. This was to comply with the changes to the ActionDispatch module in 4.2.
 
 ## Interface and Options ##
 
@@ -97,11 +104,12 @@ Q: Can the default locale be prefixed with the locale?
 A: Yes. But you'd have to change the regexp from the one described above.
 
 Q: What if I want to show the users a different locale than what I store it in the backend?
-A: That's easy, just pass a hash as an array item in your localize call such as
 
-```ruby
-localize! :locales => [{:display_name => :locale}, {:second_display => :second_locale}, :locale3, :locale4]
-```
+~~A: That's easy, just pass a hash as an array item in your localize call such as~~
+
+:x: `ruby localize! :locales => [{:display_name => :locale}, {:second_display => :second_locale}, :locale3, :locale4]`
+
+A: Support for this has been removed due to incompatibility with the upgrade to Rails 4.2.
 
 ## Thanks ##
 

@@ -1,4 +1,4 @@
-class RouteTranslationVisitor < Journey::Visitors::String
+class RouteTranslationVisitor < ActionDispatch::Journey::Visitors::String
 
   def route_translations
     @route_translations ||= {}
@@ -7,10 +7,6 @@ class RouteTranslationVisitor < Journey::Visitors::String
   def terminal node
     return node unless node.literal?
     localify_node(node)
-  end
-
-  def visit_STAR node
-    "*#{unary(node)}"
   end
 
   private

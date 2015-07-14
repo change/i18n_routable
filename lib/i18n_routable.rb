@@ -1,6 +1,5 @@
-require 'rails/all'
+require 'action_controller/railtie'
 require 'active_support/all'
-require 'journey'
 
 require 'i18n_routable/version'
 require 'i18n_routable/config'
@@ -15,16 +14,13 @@ ActionDispatch::Routing::Mapper.send :include, I18nRoutable::RoutesRbFile::Local
 require 'i18n_routable/generating/original_route_to_i18n_route'
 ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Generating::OriginalRouteToI18nRoute
 
-require 'i18n_routable/generating/localizable_url_helper'
-ActionDispatch::Routing::RouteSet::NamedRouteCollection.send :include, I18nRoutable::Generating::LocalizableUrlHelper
-
 
 require 'i18n_routable/util/reverse_route_lookup'
 ActionDispatch::Routing::RouteSet.send :include, I18nRoutable::Util::ReverseRouteLookup
 
 
 require 'i18n_routable/outgoing/localizable_route'
-Journey::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute
+ActionDispatch::Journey::Route.send :include, I18nRoutable::Outgoing::LocalizableRoute
 
 require 'i18n_routable/outgoing/localizable_formatter'
-Journey::Formatter.send :include, I18nRoutable::Outgoing::LocalizableFormatter
+ActionDispatch::Journey::Formatter.send :include, I18nRoutable::Outgoing::LocalizableFormatter

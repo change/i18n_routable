@@ -26,6 +26,10 @@ describe I18nRoutable do
       resolve("/fr-CA/canada_test").should eql :action => "foo", :controller => "test", :locale => "fr-CA", :i18n_test=>"canada_test"
     end
 
+    it 'should route en-US path properly' do
+      resolve("/en-US/canada_test").should eql :action => "foo", :controller => "test", :locale => "en-US", :i18n_test=>"canada_test"
+    end
+
     it 'should resolve custom actions' do
       resolve("/es/puestos/1/unirse", :post).should eql :action=>"join", :controller=>"posts", :locale=>"es", :i18n_posts=>"puestos", :id=>"1", :i18n_join=>"unirse"
     end
@@ -36,8 +40,8 @@ describe I18nRoutable do
     end
 
     it "should keep the default value for untranslated route segments" do
-      resolve("/gibberish/posts/").should eql :action=>"index", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts"
-      resolve("/gibberish/posts/the-new").should eql :action=>"new", :controller=>"posts", :locale=>"gibberish", :i18n_posts=>"posts", :i18n_new=>"the-new"
+      resolve("/gibb/posts/").should eql :action=>"index", :controller=>"posts", :locale=>"gibb", :i18n_posts=>"posts"
+      resolve("/gibb/posts/the-new").should eql :action=>"new", :controller=>"posts", :locale=>"gibb", :i18n_posts=>"posts", :i18n_new=>"the-new"
     end
 
     it 'should recognize un-resourcful urls' do
@@ -84,13 +88,17 @@ describe I18nRoutable do
       posts_path(locale: :fr, :i18n_posts => 'puestos').should eql '/fr/messages'
     end
 
-    it 'should work without passing parameters in a hash' do
-      post_path("post-title").should eql "/posts/post-title"
+    it 'should append any other params' do
+      posts_path(locale: :fr, :i18n_posts => 'puestos', :foo => 'bar').should eql '/fr/messages?foo=bar'
     end
+
+    # it 'should work without passing parameters in a hash' do
+    #   post_path("post-title").should eql "/posts/post-title"
+    # end
 
     it 'should keep the english if the translation is missing' do
       lambda { I18n.translate(:posts, :locale => 'gibb', :raise => true) }.should raise_error(I18n::MissingTranslationData)
-      new_post_path(:locale => :gibb).should == "/gibberish/posts/the-new"
+      new_post_path(:locale => :gibb).should == "/gibb/posts/the-new"
     end
 
     it 'should work for both _path and _url' do
@@ -123,6 +131,10 @@ describe I18nRoutable do
       posts_path(:locale => I18n.default_locale).should eql posts_path
     end
 
+    it "should accept 'en-US' :locale param as an option" do
+      posts_path(:locale => :'en-US').should eql "/en-US/posts"
+    end
+
     it 'should override I18n.locale if :locale is passed in' do
       I18n.locale = :es
       posts_path(:locale => :en).should eql "/posts" # option overrides I18n.locale
@@ -149,55 +161,55 @@ describe I18nRoutable do
 
     it 'should understand the difference between display locales and backend locales' do
       I18n.locale = :gibb
-      new_post_url.should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url.should eql "http://www.example.com/gibb/posts/the-new"
       I18n.locale = :en
-      new_post_url(:locale => :gibb).should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url(:locale => :gibb).should eql "http://www.example.com/gibb/posts/the-new"
     end
 
     it 'should accept display locales to the url' do
-      new_post_url(:locale => 'gibberish').should eql "http://www.example.com/gibberish/posts/the-new"
+      new_post_url(:locale => 'gibb').should eql "http://www.example.com/gibb/posts/the-new"
     end
 
   end
 
-  context 'hash_for helpers' do
+  # context 'hash_for helpers' do
+  #
+  #   it 'should return a localized route when using hash_for helpers passing in locale' do
+  #     I18n.locale = 'fr'
+  #     route_hash = hash_for_posts_url(:locale => 'es')
+  #     route_hash.should eql :locale=>'es', :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
+  #     url_for(route_hash).should eql "http://www.example.com/es/puestos"
+  #
+  #     route_hash = hash_for_posts_url(:locale => :es)
+  #     route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
+  #     url_for(route_hash).should eql "http://www.example.com/es/puestos"
+  #   end
+  #
+  #   it 'should respect I18n.locale' do
+  #     route_hash = hash_for_post_url(:id => 1)
+  #     route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
+  #     url_for(route_hash).should eql "http://www.example.com/posts/1"
+  #
+  #     I18n.locale = 'es'
+  #
+  #     route_hash = hash_for_post_url(:id => 1)
+  #     route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
+  #     url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
+  #   end
+  #
+  # end
 
-    it 'should return a localized route when using hash_for helpers passing in locale' do
-      I18n.locale = 'fr'
-      route_hash = hash_for_posts_url(:locale => 'es')
-      route_hash.should eql :locale=>'es', :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
-      url_for(route_hash).should eql "http://www.example.com/es/puestos"
-
-      route_hash = hash_for_posts_url(:locale => :es)
-      route_hash.should eql :locale=>:es, :action=>"index", :controller=>"posts", :use_route=>"posts", :only_path=>false
-      url_for(route_hash).should eql "http://www.example.com/es/puestos"
-    end
-
-    it 'should respect I18n.locale' do
-      route_hash = hash_for_post_url(:id => 1)
-      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
-      url_for(route_hash).should eql "http://www.example.com/posts/1"
-
-      I18n.locale = 'es'
-
-      route_hash = hash_for_post_url(:id => 1)
-      route_hash.should eql :id=>1, :action=>"show", :controller=>"posts", :use_route=>"post", :only_path=>false
-      url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
-    end
-
-  end
-
-  context 'url_for' do
-
-    it 'should recognize non named routes' do
-      I18n.locale = 'es'
-
-      route_hash = hash_for_post_url(:id => 1)
-      route_hash = route_hash.slice!(:use_route)
-      route_hash.should eql :id => 1, :action => "show", :controller => "posts", :only_path => false
-      url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
-
-    end
-  end
+  # context 'url_for' do
+  #
+  #   it 'should recognize non named routes' do
+  #     I18n.locale = 'es'
+  #
+  #     route_hash = hash_for_post_url(:id => 1)
+  #     route_hash = route_hash.slice!(:use_route)
+  #     route_hash.should eql :id => 1, :action => "show", :controller => "posts", :only_path => false
+  #     url_for(route_hash).should eql "http://www.example.com/es/puestos/1"
+  #
+  #   end
+  # end
 
 end
